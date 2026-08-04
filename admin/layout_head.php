@@ -16,7 +16,7 @@ $adminActive = $adminActive ?? 'dashboard';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title><?= e($adminTitle) ?> — Nazarbandi Admin</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/admin.css?v=<?= time() ?>">
 </head>
 <body>
 <div class="shell">
