@@ -58,8 +58,7 @@ button, input, select, textarea { font-family: inherit; }
     padding: 1.5rem 2.5rem; background: #fff; border-bottom: 1px solid #eee;
 }
 .topbar h1 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.4rem; margin: 0; color: #111;
+    font-size: 1.4rem; margin: 0; color: #111; font-weight: 600;
 }
 .user { display: flex; align-items: center; gap: 0.6rem; }
 .avatar {
@@ -85,8 +84,7 @@ button, input, select, textarea { font-family: inherit; }
     color: #888; margin: 0 0 0.5rem;
 }
 .stat-value {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.8rem; margin: 0; color: #111;
+    font-size: 1.8rem; margin: 0; color: #111; font-weight: 700;
 }
 
 /* Panels */
@@ -95,8 +93,7 @@ button, input, select, textarea { font-family: inherit; }
     padding: 2rem; margin-bottom: 2rem;
 }
 .panel h2 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.2rem; margin: 0 0 1.5rem; color: #111;
+    font-size: 1.2rem; margin: 0 0 1.5rem; color: #111; font-weight: 600;
 }
 .panel h3 {
     font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;
@@ -242,7 +239,6 @@ button, input, select, textarea { font-family: inherit; }
 .dash-card__body { flex: 1; }
 .dash-card__value {
     font-size: 1.8rem; font-weight: 700; margin: 0; line-height: 1.2;
-    font-family: Georgia, 'Times New Roman', serif;
 }
 .dash-card__label {
     font-size: 0.78rem; margin: 0.25rem 0 0; opacity: 0.85;
@@ -271,8 +267,7 @@ button, input, select, textarea { font-family: inherit; }
     margin-bottom: 1.25rem;
 }
 .dash-panel__header h2 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.05rem; margin: 0; color: #111;
+    font-size: 1.05rem; margin: 0; color: #111; font-weight: 600;
 }
 .dash-panel__link {
     font-size: 0.78rem; color: #4a90d9; text-decoration: none;
@@ -324,7 +319,6 @@ button, input, select, textarea { font-family: inherit; }
 .quick-stat__label { font-size: 0.85rem; color: #666; }
 .quick-stat__value {
     font-size: 1.05rem; font-weight: 600; color: #111;
-    font-family: Georgia, 'Times New Roman', serif;
 }
 
 /* ===== BUTTON SM ===== */
