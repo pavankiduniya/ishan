@@ -38,6 +38,7 @@ try {
         'avgPerDay' => count($dailyRows) > 0 ? round($totalViews / count($dailyRows)) : 0,
         'daysTracked' => count($dailyRows),
         'chartData' => $chartData,
+        'serverToday' => date('Y-m-d'),
     ]);
 } catch (Exception $e) {
     echo json_encode(['error' => 'Failed to load stats']);

@@ -3,6 +3,9 @@
  * Nazarbandi — Site Configuration
  */
 
+// Timezone — keep PHP and MySQL in sync
+date_default_timezone_set('Asia/Kolkata');
+
 // Base paths
 define('SITE_TITLE', 'Nazarbandi');
 define('SITE_ROOT', dirname(__DIR__));

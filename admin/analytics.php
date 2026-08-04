@@ -155,25 +155,37 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
     var ctx = canvas.getContext('2d');
     var activeDays = 15;
     var chartData = [];
+    var serverToday = '';
 
-    // Fill missing days between start and end with 0
+    // Fill missing days using server's today date (avoids timezone mismatch)
     function fillDays(data, days) {
+        if (!serverToday || data.length === 0) return data;
+
         var filled = [];
-        var today = new Date();
-        today.setHours(0, 0, 0, 0);
-        var startDays = days === 0 ? (data.length > 0 ? Math.ceil((today - new Date(data[0].day)) / 86400000) + 1 : 1) : days;
+        // Parse server today as local date parts
+        var parts = serverToday.split('-');
+        var today = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+
+        var startDays = days === 0 ? (data.length > 0 ? Math.ceil((today - parseDay(data[0].day)) / 86400000) + 1 : 1) : days;
 
         var dataMap = {};
         data.forEach(function(d) { dataMap[d.day] = d; });
 
         for (var i = startDays - 1; i >= 0; i--) {
-            var d = new Date(today);
+            var d = new Date(today.getTime());
             d.setDate(d.getDate() - i);
-            var key = d.toISOString().slice(0, 10);
+            var key = d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
             filled.push(dataMap[key] || { day: key, views: 0, unique: 0 });
         }
         return filled;
     }
+
+    function parseDay(str) {
+        var p = str.split('-');
+        return new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+    }
+
+    function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 
     function drawChart() {
         var data = fillDays(chartData, activeDays);
@@ -286,6 +298,7 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
             .then(function(data) {
                 if (!data || data.error) return;
                 chartData = data.chartData || [];
+                serverToday = data.serverToday || '';
                 updateStats(data);
                 drawChart();
             })
