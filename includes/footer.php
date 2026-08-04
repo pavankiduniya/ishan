@@ -1,7 +1,7 @@
 <!-- Footer -->
 <footer>
     <p class="signature">ik</p>
-    <p class="visits"><span id="visit-count" class="odometer">&ndash;</span></p>
+    <div class="visit-counter" id="visit-count"></div>
     <p class="copyright">&copy; <?= date('Y') ?> Nazarbandi. All rights reserved.</p>
 </footer>
 
@@ -43,10 +43,19 @@
                 var digits = String(data.totalViews).split('');
                 countEl.innerHTML = '';
                 digits.forEach(function(d) {
-                    var span = document.createElement('span');
-                    span.className = 'digit';
-                    span.textContent = d;
-                    countEl.appendChild(span);
+                    var box = document.createElement('span');
+                    box.style.display = 'inline-flex';
+                    box.style.alignItems = 'center';
+                    box.style.justifyContent = 'center';
+                    box.style.width = '18px';
+                    box.style.height = '24px';
+                    box.style.background = '#111';
+                    box.style.color = '#fff';
+                    box.style.fontSize = '11px';
+                    box.style.fontWeight = '500';
+                    box.style.borderRadius = '3px';
+                    box.textContent = d;
+                    countEl.appendChild(box);
                 });
             }
         })
