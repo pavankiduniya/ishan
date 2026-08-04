@@ -52,10 +52,10 @@ $recentVisits = $db->query("
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5m0 14h16M8 19v-6m4.5 6V9m4.5 10v-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="dash-card__body">
-            <p class="dash-card__value"><?= number_format($totalViews) ?></p>
+            <p class="dash-card__value" id="dash-views"><?= number_format($totalViews) ?></p>
             <p class="dash-card__label">Total Page Views</p>
         </div>
-        <p class="dash-card__sub">Today: <?= $todayViews ?></p>
+        <p class="dash-card__sub">Today: <span id="dash-today-views"><?= $todayViews ?></span></p>
     </div>
 
     <div class="dash-card dash-card--green">
@@ -63,10 +63,10 @@ $recentVisits = $db->query("
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm11 0v-2m0 6v-2m0 6v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <div class="dash-card__body">
-            <p class="dash-card__value"><?= number_format($totalVisitors) ?></p>
+            <p class="dash-card__value" id="dash-visitors"><?= number_format($totalVisitors) ?></p>
             <p class="dash-card__label">Unique Visitors</p>
         </div>
-        <p class="dash-card__sub">Today: <?= $todayUnique ?></p>
+        <p class="dash-card__sub">Today: <span id="dash-today-unique"><?= $todayUnique ?></span></p>
     </div>
 
     <div class="dash-card dash-card--purple">
@@ -223,5 +223,25 @@ $recentVisits = $db->query("
     </table>
     <?php endif; ?>
 </section>
+
+<script>
+// Dashboard auto-refresh every 10s
+(function() {
+    function refresh() {
+        fetch('<?= BASE_URL ?>/api/stats', { cache: 'no-store' })
+            .then(function(r) { return r.ok ? r.json() : null; })
+            .then(function(data) {
+                if (!data || data.error) return;
+                var el;
+                el = document.getElementById('dash-views'); if (el) el.textContent = data.totalViews.toLocaleString();
+                el = document.getElementById('dash-visitors'); if (el) el.textContent = data.totalVisitors.toLocaleString();
+                el = document.getElementById('dash-today-views'); if (el) el.textContent = data.todayViews;
+                el = document.getElementById('dash-today-unique'); if (el) el.textContent = data.todayUnique;
+            })
+            .catch(function() {});
+    }
+    setInterval(refresh, 10000);
+})();
+</script>
 
 <?php require_once __DIR__ . '/layout_foot.php'; ?>
