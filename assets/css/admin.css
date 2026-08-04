@@ -213,3 +213,6 @@ button, input, select, textarea { font-family: inherit; }
     .form-row { flex-direction: column; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Bar chart alt color (unique visitors) */
+.bar.bar-alt { background: #4a90d9; }
