@@ -8,24 +8,21 @@ require_once __DIR__ . '/layout_head.php';
 
 $db = getDB();
 
-// Top pages
+// Top pages — top 10
 $topPages = $db->query('
     SELECT path, COUNT(*) as views, COUNT(DISTINCT visitor_id) as unique_visitors
-    FROM visits GROUP BY path ORDER BY views DESC LIMIT 15
+    FROM visits GROUP BY path ORDER BY views DESC LIMIT 10
 ')->fetchAll();
 
-// Visitor locations
+// Visitor locations — top 10
 $locations = $db->query("
     SELECT city, region, country, lat, lon, COUNT(*) as visitors
     FROM visitors WHERE country != '' AND (lat != 0 OR lon != 0)
-    GROUP BY city, region, country, lat, lon ORDER BY visitors DESC LIMIT 30
+    GROUP BY city, region, country, lat, lon ORDER BY visitors DESC LIMIT 10
 ")->fetchAll();
 
-// Recent visits
-$recentVisits = $db->query("
-    SELECT path, visited_at, ip, city, region, country
-    FROM visits ORDER BY visited_at DESC LIMIT 20
-")->fetchAll();
+// Total recent visits count (for pagination)
+$totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn();
 ?>
 
 <!-- Stat Cards (live updated) -->
@@ -127,7 +124,7 @@ $recentVisits = $db->query("
         <table class="data-table">
             <thead><tr><th>City</th><th>Country</th><th>Visitors</th></tr></thead>
             <tbody>
-                <?php foreach (array_slice($locations, 0, 10) as $loc): ?>
+                <?php foreach ($locations as $loc): ?>
                 <tr>
                     <td><?= e($loc['city'] ?: '—') ?></td>
                     <td><?= e($loc['country']) ?></td>
@@ -140,29 +137,16 @@ $recentVisits = $db->query("
     </section>
 </div>
 
-<!-- Recent Visits -->
+<!-- Recent Visits (paginated) -->
 <section class="dash-panel">
-    <div class="dash-panel__header"><h2>Recent Visits</h2></div>
-    <?php if (empty($recentVisits)): ?>
-        <p class="empty">No visits recorded yet.</p>
-    <?php else: ?>
-    <table class="data-table">
-        <thead><tr><th>Page</th><th>Time</th><th>IP</th><th>Location</th></tr></thead>
-        <tbody>
-            <?php foreach ($recentVisits as $v):
-                $parts = array_filter([$v['city'], $v['region'], $v['country']]);
-                $location = $parts ? implode(', ', $parts) : 'Local';
-            ?>
-            <tr>
-                <td><code><?= e($v['path']) ?></code></td>
-                <td><?= date('M j, g:ia', strtotime($v['visited_at'])) ?></td>
-                <td><code><?= e($v['ip']) ?></code></td>
-                <td><?= e($location) ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <?php endif; ?>
+    <div class="dash-panel__header">
+        <h2>Recent Visits</h2>
+        <span class="dash-panel__sub" id="visits-info"></span>
+    </div>
+    <div id="recent-visits-table">
+        <p class="empty">Loading...</p>
+    </div>
+    <div class="pagination" id="visits-pagination"></div>
 </section>
 
 <script>
@@ -322,6 +306,70 @@ $recentVisits = $db->query("
     fetchAndRender();
     setInterval(fetchAndRender, 10000);
     window.addEventListener('resize', drawChart);
+})();
+
+// Recent Visits Pagination
+(function() {
+    var perPage = 20;
+    var currentPage = 1;
+    var tableEl = document.getElementById('recent-visits-table');
+    var paginationEl = document.getElementById('visits-pagination');
+    var infoEl = document.getElementById('visits-info');
+
+    function loadPage(page) {
+        currentPage = page;
+        fetch('<?= BASE_URL ?>/api/recent-visits?page=' + page + '&per_page=' + perPage, { cache: 'no-store' })
+            .then(function(r) { return r.ok ? r.json() : null; })
+            .then(function(data) {
+                if (!data) return;
+                renderTable(data.rows);
+                renderPagination(data.total, data.totalPages, data.page);
+                if (infoEl) infoEl.textContent = 'Showing ' + ((data.page - 1) * perPage + 1) + '–' + Math.min(data.page * perPage, data.total) + ' of ' + data.total;
+            })
+            .catch(function() {});
+    }
+
+    function renderTable(rows) {
+        if (!rows || rows.length === 0) {
+            tableEl.innerHTML = '<p class="empty">No visits recorded yet.</p>';
+            return;
+        }
+        var html = '<table class="data-table"><thead><tr><th>Page</th><th>Time</th><th>IP</th><th>Location</th></tr></thead><tbody>';
+        rows.forEach(function(v) {
+            html += '<tr><td><code>' + escHtml(v.path) + '</code></td><td>' + v.time + '</td><td><code>' + escHtml(v.ip) + '</code></td><td>' + escHtml(v.location) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+        tableEl.innerHTML = html;
+    }
+
+    function renderPagination(total, totalPages, page) {
+        if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+        var html = '';
+        if (page > 1) html += '<button class="page-btn" data-page="' + (page - 1) + '">&laquo;</button>';
+        for (var i = 1; i <= totalPages; i++) {
+            if (i === page) {
+                html += '<span class="page-btn active">' + i + '</span>';
+            } else if (i <= 3 || i > totalPages - 2 || Math.abs(i - page) <= 1) {
+                html += '<button class="page-btn" data-page="' + i + '">' + i + '</button>';
+            } else if (html.slice(-3) !== '...') {
+                html += '...';
+            }
+        }
+        if (page < totalPages) html += '<button class="page-btn" data-page="' + (page + 1) + '">&raquo;</button>';
+        paginationEl.innerHTML = html;
+
+        paginationEl.querySelectorAll('button').forEach(function(btn) {
+            btn.addEventListener('click', function() { loadPage(parseInt(btn.dataset.page)); });
+        });
+    }
+
+    function escHtml(s) {
+        var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
+    }
+
+    loadPage(1);
+    // Auto-refresh current page every 10s
+    setInterval(function() { loadPage(currentPage); }, 10000);
 })();
 </script>
 

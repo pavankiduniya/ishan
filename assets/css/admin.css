@@ -355,3 +355,24 @@ button, input, select, textarea { font-family: inherit; }
 .range-tab.active {
     background: #111; color: #fff; border-color: #111;
 }
+
+/* ===== PAGINATION ===== */
+.pagination {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; margin-top: 1.25rem;
+}
+.page-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 32px; height: 32px; padding: 0 8px;
+    border: 1px solid #eee; border-radius: 6px;
+    background: #fff; color: #555; font-size: 0.78rem;
+    cursor: pointer; transition: all 0.15s ease;
+}
+.page-btn:hover { border-color: #ccc; color: #111; }
+.page-btn.active {
+    background: #111; color: #fff; border-color: #111; cursor: default;
+}
+
+.dash-panel__sub {
+    font-size: 0.72rem; color: #888;
+}
