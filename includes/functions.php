@@ -186,7 +186,8 @@ function formatCategoryLabel(string $slug): string {
 }
 
 /**
- * Get site content (hero, about, services) from JSON or defaults.
+ * Get site content (hero, about, services) from database.
+ * Falls back to defaults if DB is unavailable.
  */
 function getSiteContent(): array {
     $defaults = [
@@ -221,11 +222,45 @@ function getSiteContent(): array {
         ],
     ];
 
-    if (file_exists(SITE_CONTENT_FILE)) {
-        $parsed = json_decode(file_get_contents(SITE_CONTENT_FILE), true);
-        if ($parsed) {
-            return array_replace_recursive($defaults, $parsed);
+    try {
+        $db = getDB();
+        $rows = $db->query('SELECT setting_key, setting_value FROM site_settings')->fetchAll();
+        $settings = [];
+        foreach ($rows as $r) {
+            $settings[$r['setting_key']] = $r['setting_value'];
         }
+
+        if (!empty($settings)) {
+            $content = [
+                'hero' => [
+                    'kicker' => $settings['hero_kicker'] ?? $defaults['hero']['kicker'],
+                    'headingLine1' => $settings['hero_heading_line1'] ?? $defaults['hero']['headingLine1'],
+                    'headingLine2' => $settings['hero_heading_line2'] ?? $defaults['hero']['headingLine2'],
+                    'sub' => $settings['hero_sub'] ?? $defaults['hero']['sub'],
+                    'ctaLabel' => $settings['hero_cta_label'] ?? $defaults['hero']['ctaLabel'],
+                    'ctaHref' => $settings['hero_cta_href'] ?? $defaults['hero']['ctaHref'],
+                ],
+                'about' => [
+                    'kicker' => $settings['about_kicker'] ?? $defaults['about']['kicker'],
+                    'heading' => $settings['about_heading'] ?? $defaults['about']['heading'],
+                    'paragraphs' => isset($settings['about_paragraphs'])
+                        ? array_filter(array_map('trim', explode("\n\n", str_replace('\\n\\n', "\n\n", $settings['about_paragraphs']))))
+                        : $defaults['about']['paragraphs'],
+                    'signature' => $settings['about_signature'] ?? $defaults['about']['signature'],
+                    'photo' => ($settings['about_photo'] ?? '') ?: null,
+                ],
+                'services' => [
+                    'kicker' => $settings['services_kicker'] ?? $defaults['services']['kicker'],
+                    'heading' => $settings['services_heading'] ?? $defaults['services']['heading'],
+                    'items' => isset($settings['services_items'])
+                        ? (json_decode($settings['services_items'], true) ?: $defaults['services']['items'])
+                        : $defaults['services']['items'],
+                ],
+            ];
+            return $content;
+        }
+    } catch (Exception $e) {
+        // DB unavailable, use defaults
     }
 
     return $defaults;

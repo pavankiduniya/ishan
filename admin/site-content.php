@@ -1,6 +1,7 @@
 <?php
 /**
  * Admin — Site Content Management (Hero, About, Services)
+ * Now saves to MySQL site_settings table.
  */
 $adminTitle = 'Site Content';
 $adminActive = 'site-content';
@@ -9,33 +10,40 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/auth.php';
 
+/**
+ * Upsert a setting into the database.
+ */
+function saveSetting(string $key, string $value): void {
+    $db = getDB();
+    $stmt = $db->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?');
+    $stmt->execute([$key, $value, $value]);
+}
+
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $section = $_POST['section'] ?? '';
-    $content = getSiteContent();
 
     if ($section === 'hero') {
-        $content['hero']['kicker'] = trim($_POST['kicker'] ?? $content['hero']['kicker']);
-        $content['hero']['headingLine1'] = trim($_POST['headingLine1'] ?? $content['hero']['headingLine1']);
-        $content['hero']['headingLine2'] = trim($_POST['headingLine2'] ?? $content['hero']['headingLine2']);
-        $content['hero']['sub'] = trim($_POST['sub'] ?? $content['hero']['sub']);
-        $content['hero']['ctaLabel'] = trim($_POST['ctaLabel'] ?? $content['hero']['ctaLabel']);
-        $content['hero']['ctaHref'] = trim($_POST['ctaHref'] ?? $content['hero']['ctaHref']);
+        saveSetting('hero_kicker', trim($_POST['kicker'] ?? ''));
+        saveSetting('hero_heading_line1', trim($_POST['headingLine1'] ?? ''));
+        saveSetting('hero_heading_line2', trim($_POST['headingLine2'] ?? ''));
+        saveSetting('hero_sub', trim($_POST['sub'] ?? ''));
+        saveSetting('hero_cta_label', trim($_POST['ctaLabel'] ?? ''));
+        saveSetting('hero_cta_href', trim($_POST['ctaHref'] ?? ''));
     }
 
     if ($section === 'about') {
-        $content['about']['kicker'] = trim($_POST['kicker'] ?? $content['about']['kicker']);
-        $content['about']['heading'] = trim($_POST['heading'] ?? $content['about']['heading']);
-        $content['about']['signature'] = trim($_POST['signature'] ?? $content['about']['signature']);
+        saveSetting('about_kicker', trim($_POST['kicker'] ?? ''));
+        saveSetting('about_heading', trim($_POST['heading'] ?? ''));
+        saveSetting('about_signature', trim($_POST['signature'] ?? ''));
         $paragraphs = trim($_POST['paragraphs'] ?? '');
-        if ($paragraphs) {
-            $content['about']['paragraphs'] = array_filter(array_map('trim', explode("\n\n", $paragraphs)));
-        }
+        // Store with \n\n as separator
+        saveSetting('about_paragraphs', $paragraphs);
     }
 
     if ($section === 'services') {
-        $content['services']['kicker'] = trim($_POST['kicker'] ?? $content['services']['kicker']);
-        $content['services']['heading'] = trim($_POST['heading'] ?? $content['services']['heading']);
+        saveSetting('services_kicker', trim($_POST['kicker'] ?? ''));
+        saveSetting('services_heading', trim($_POST['heading'] ?? ''));
 
         // Rebuild items from POST
         $items = [];
@@ -48,18 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
-        if (!empty($items)) $content['services']['items'] = $items;
+        saveSetting('services_items', json_encode($items, JSON_UNESCAPED_UNICODE));
     }
 
-    // Save
-    if (!is_dir(DATA_DIR)) mkdir(DATA_DIR, 0755, true);
-    file_put_contents(SITE_CONTENT_FILE, json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-    header('Location: ' . BASE_URL . '/admin/site-content?notice=Content updated.#' . $section);
+    header('Location: ' . BASE_URL . '/admin/site-content.php?notice=Content updated.#' . $section);
     exit;
 }
 
-$adminTitle = 'Site Content';
 require_once __DIR__ . '/layout_head.php';
 
 $content = getSiteContent();
@@ -69,8 +72,8 @@ $services = $content['services'];
 ?>
 
 <!-- Hero Section Editor -->
-<section class="panel" id="hero">
-    <h2>Hero Section</h2>
+<section class="dash-panel" id="hero">
+    <div class="dash-panel__header"><h2>Hero Section</h2></div>
     <form method="POST" class="form-stack">
         <input type="hidden" name="section" value="hero">
         <div class="form-group">
@@ -106,8 +109,8 @@ $services = $content['services'];
 </section>
 
 <!-- About Section Editor -->
-<section class="panel" id="about">
-    <h2>About Section</h2>
+<section class="dash-panel" id="about">
+    <div class="dash-panel__header"><h2>About Section</h2></div>
     <form method="POST" class="form-stack">
         <input type="hidden" name="section" value="about">
         <div class="form-row">
@@ -133,8 +136,8 @@ $services = $content['services'];
 </section>
 
 <!-- Services Section Editor -->
-<section class="panel" id="services">
-    <h2>Services Section</h2>
+<section class="dash-panel" id="services">
+    <div class="dash-panel__header"><h2>Services Section</h2></div>
     <form method="POST" class="form-stack">
         <input type="hidden" name="section" value="services">
         <div class="form-row">
@@ -148,9 +151,9 @@ $services = $content['services'];
             </div>
         </div>
 
-        <h3>Service Items</h3>
+        <h3 style="margin: 1.5rem 0 1rem; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: #666;">Service Items</h3>
         <div id="services-list">
-            <?php foreach ($services['items'] as $i => $item): ?>
+            <?php foreach ($services['items'] as $item): ?>
             <div class="form-row service-item">
                 <div class="form-group">
                     <label>Title</label>
@@ -172,19 +175,10 @@ $services = $content['services'];
 
 <script>
 function addServiceItem() {
-    const list = document.getElementById('services-list');
-    const row = document.createElement('div');
+    var list = document.getElementById('services-list');
+    var row = document.createElement('div');
     row.className = 'form-row service-item';
-    row.innerHTML = `
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" name="item_title[]" value="">
-        </div>
-        <div class="form-group">
-            <label>Description</label>
-            <input type="text" name="item_desc[]" value="">
-        </div>
-    `;
+    row.innerHTML = '<div class="form-group"><label>Title</label><input type="text" name="item_title[]" value=""></div><div class="form-group"><label>Description</label><input type="text" name="item_desc[]" value=""></div>';
     list.appendChild(row);
 }
 </script>
