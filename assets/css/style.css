@@ -110,21 +110,18 @@ footer .signature {
     font-family: 'Great Vibes', cursive; font-size: 1.15rem; color: #111; margin: 0;
 }
 footer .visits {
-    color: #999; font-size: 0.72rem; letter-spacing: 0.5px; margin: 0;
-    display: flex; align-items: center; gap: 0;
+    margin: 0; display: flex; align-items: center;
 }
 .odometer {
-    display: inline-flex; gap: 2px; align-items: center;
+    display: inline-flex; gap: 3px; align-items: center;
 }
 .odometer .digit {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 16px; height: 20px;
-    background: #1a1a1a; color: #fff;
-    font-family: 'Courier New', monospace;
-    font-size: 11px; font-weight: 700;
-    border-radius: 2px;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.1);
+    width: 18px; height: 24px;
+    background: #111; color: #fff;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px; font-weight: 500;
+    border-radius: 3px;
 }
 footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 
