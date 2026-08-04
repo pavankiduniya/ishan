@@ -1,7 +1,7 @@
 <!-- Footer -->
 <footer>
     <p class="signature">ik</p>
-    <p class="visits">Total visits: <span id="visit-count">&ndash;</span></p>
+    <p class="visits"><span id="visit-count" class="odometer">&ndash;</span></p>
     <p class="copyright">&copy; <?= date('Y') ?> Nazarbandi. All rights reserved.</p>
 </footer>
 
@@ -40,7 +40,14 @@
         .then(function(res) { return res.ok ? res.json() : null; })
         .then(function(data) {
             if (countEl && data && typeof data.totalViews === 'number') {
-                countEl.textContent = data.totalViews.toLocaleString();
+                var digits = String(data.totalViews).split('');
+                countEl.innerHTML = '';
+                digits.forEach(function(d) {
+                    var span = document.createElement('span');
+                    span.className = 'digit';
+                    span.textContent = d;
+                    countEl.appendChild(span);
+                });
             }
         })
         .catch(function() {});
