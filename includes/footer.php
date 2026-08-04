@@ -13,9 +13,9 @@
     </div>
 </div>
 
-<script src="<?= BASE_URL ?>/assets/js/main.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/main.js?v=<?= time() ?>"></script>
 <?php if ($showSplash ?? false): ?>
-<script src="<?= BASE_URL ?>/assets/js/splash.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/splash.js?v=<?= time() ?>"></script>
 <?php endif; ?>
 <script>
 // Visit tracking beacon + live counter polling
