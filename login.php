@@ -9,11 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Simple auth — set your credentials here or in an env/config
+    // Simple auth — default credentials: admin / nazarbandi
     $adminUser = getenv('ADMIN_USERNAME') ?: 'admin';
-    $adminPassHash = getenv('ADMIN_PASSWORD_HASH') ?: '';
+    $adminPassHash = getenv('ADMIN_PASSWORD_HASH') ?: '$2y$12$sNTzbAzErh5JQcLxUetwmO9.j9Pa/PRInnk0ZUP71Qn./AcTty7q6';
 
-    if ($adminPassHash && $username === $adminUser && password_verify($password, $adminPassHash)) {
+    if ($username === $adminUser && password_verify($password, $adminPassHash)) {
         session_start();
         $_SESSION['admin'] = $username;
         header('Location: ' . BASE_URL . '/index.php');
