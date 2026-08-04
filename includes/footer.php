@@ -24,7 +24,7 @@
     var currentCount = 0;
 
     function renderDigits(num) {
-        if (num === currentCount && countEl.children.length > 0) return;
+        if (num === currentCount) return;
         currentCount = num;
         var digits = String(num).split('');
         countEl.title = num.toLocaleString() + ' visits';
@@ -41,6 +41,7 @@
             box.style.fontSize = '8px';
             box.style.fontWeight = '500';
             box.style.borderRadius = '2px';
+            box.style.transition = 'transform 0.3s ease';
             box.textContent = d;
             countEl.appendChild(box);
         });
@@ -70,9 +71,9 @@
         .catch(function() {});
     });
 
-    // Silent poll every 30s to keep counter live
+    // Silent poll every 10s to keep counter live
     setInterval(function() {
-        fetch('<?= BASE_URL ?>/api/track.php?count=1')
+        fetch('<?= BASE_URL ?>/api/track.php?count=1', { cache: 'no-store' })
             .then(function(res) { return res.ok ? res.json() : null; })
             .then(function(data) {
                 if (data && typeof data.totalViews === 'number') {
@@ -80,7 +81,7 @@
                 }
             })
             .catch(function() {});
-    }, 30000);
+    }, 10000);
 })();
 </script>
 </body>
