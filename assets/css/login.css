@@ -1,0 +1,93 @@
+/* ===== LOGIN PAGE ===== */
+.split { display: flex; min-height: 100vh; }
+
+.showcase {
+    position: relative; flex: 1.1; overflow: hidden;
+    background: radial-gradient(ellipse at 50% 30%, #2a2a30 0%, #111114 70%);
+    display: flex; align-items: center; justify-content: center;
+}
+.overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, rgba(10,10,12,0.55) 0%, rgba(10,10,12,0.75) 100%);
+}
+.showcase-content {
+    position: relative; z-index: 2; max-width: 380px;
+    padding: 0 3rem; text-align: center; color: #fff;
+}
+.showcase-content .sig {
+    font-family: 'Great Vibes', cursive; font-size: 2.4rem;
+    margin: 0 0 0.5rem; color: #fff;
+}
+.showcase-content h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.7rem; letter-spacing: 1px; margin: 0 0 1.25rem;
+}
+.showcase-content .bio {
+    font-size: 0.95rem; line-height: 1.7;
+    color: rgba(255,255,255,0.85); margin: 0 0 1.5rem;
+}
+.showcase-content .handle {
+    font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.7); text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 2px;
+}
+
+.form-side {
+    flex: 0.9; display: flex; align-items: center; justify-content: center;
+    padding: 3rem;
+}
+.login-form { width: 100%; max-width: 340px; }
+.login-form .brand {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.4rem; letter-spacing: 3px; color: #111;
+    text-decoration: none; display: block; margin-bottom: 0.75rem;
+}
+.login-form .kicker {
+    font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+    color: #888; margin: 0 0 2rem;
+}
+.login-form .error {
+    background: #fff0f0; color: #c00; padding: 0.75rem 1rem;
+    font-size: 0.85rem; border-radius: 6px; margin: 0 0 1.5rem;
+}
+.login-form form { display: flex; flex-direction: column; gap: 1.25rem; }
+.login-form label {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: #555;
+}
+.login-form input {
+    padding: 0.75rem 1rem; border: 1px solid #ddd; border-radius: 6px;
+    font-size: 0.95rem; outline: none; transition: border-color 0.2s ease;
+}
+.login-form input:focus { border-color: #111; }
+.login-form button {
+    margin-top: 0.5rem; padding: 0.85rem; background: #111; color: #fff;
+    border: none; border-radius: 6px; font-size: 0.85rem;
+    letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer;
+    transition: background 0.2s ease;
+}
+.login-form button:hover { background: #333; }
+.login-form .back {
+    display: inline-block; margin-top: 2rem; font-size: 0.8rem;
+    color: #888; text-decoration: none;
+}
+.login-form .back:hover { color: #111; }
+
+/* Mosaic background */
+#login-mosaic {
+    position: absolute; inset: 0; z-index: 0; overflow: hidden;
+    display: flex; gap: 2px;
+}
+#login-mosaic .mosaic-col {
+    display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0;
+}
+#login-mosaic .mosaic-col img {
+    width: 100%; display: block; filter: grayscale(35%);
+    -webkit-user-drag: none;
+}
+
+@media (max-width: 780px) {
+    .split { flex-direction: column; }
+    .showcase { min-height: 40vh; }
+    .form-side { padding: 2rem 1.5rem; }
+}
