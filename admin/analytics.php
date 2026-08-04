@@ -281,7 +281,7 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
     }
 
     function fetchAndRender() {
-        fetch('<?= BASE_URL ?>/api/stats', { cache: 'no-store' })
+        fetch('<?= BASE_URL ?>/api/stats.php', { cache: 'no-store' })
             .then(function(r) { return r.ok ? r.json() : null; })
             .then(function(data) {
                 if (!data || data.error) return;
@@ -318,7 +318,7 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
 
     function loadPage(page) {
         currentPage = page;
-        fetch('<?= BASE_URL ?>/api/recent-visits?page=' + page + '&per_page=' + perPage, { cache: 'no-store' })
+        fetch('<?= BASE_URL ?>/api/recent-visits.php?page=' + page + '&per_page=' + perPage, { cache: 'no-store' })
             .then(function(r) { return r.ok ? r.json() : null; })
             .then(function(data) {
                 if (!data) return;

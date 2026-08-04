@@ -228,7 +228,7 @@ $recentVisits = $db->query("
 // Dashboard auto-refresh every 10s
 (function() {
     function refresh() {
-        fetch('<?= BASE_URL ?>/api/stats', { cache: 'no-store' })
+        fetch('<?= BASE_URL ?>/api/stats.php', { cache: 'no-store' })
             .then(function(r) { return r.ok ? r.json() : null; })
             .then(function(data) {
                 if (!data || data.error) return;
