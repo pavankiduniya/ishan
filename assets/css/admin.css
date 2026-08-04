@@ -332,3 +332,26 @@ button, input, select, textarea { font-family: inherit; }
 @media (max-width: 600px) {
     .dash-stats { grid-template-columns: 1fr; }
 }
+
+/* ===== LINE CHART ===== */
+.line-chart-wrap {
+    width: 100%; overflow: hidden; margin-top: 1rem;
+}
+.line-chart-wrap canvas {
+    width: 100%; display: block;
+}
+
+/* ===== RANGE TABS ===== */
+.range-tabs {
+    display: flex; gap: 4px;
+}
+.range-tab {
+    padding: 0.4rem 0.75rem; border: 1px solid #eee; border-radius: 6px;
+    background: #fff; color: #666; font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 0.5px; cursor: pointer;
+    transition: all 0.15s ease;
+}
+.range-tab:hover { border-color: #ccc; color: #111; }
+.range-tab.active {
+    background: #111; color: #fff; border-color: #111;
+}
