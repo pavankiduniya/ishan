@@ -334,3 +334,15 @@ function currentPage(): string {
 function e(string $str): string {
     return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
 }
+
+
+/**
+ * Turn arbitrary text into a URL-safe slug.
+ */
+function slugify(string $input): string {
+    $slug = strtolower(trim($input));
+    $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+    $slug = preg_replace('/[\s]+/', '-', $slug);
+    $slug = preg_replace('/-+/', '-', $slug);
+    return trim($slug, '-');
+}

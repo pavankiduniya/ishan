@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === $adminUser && password_verify($password, $adminPassHash)) {
         session_start();
         $_SESSION['admin'] = $username;
-        header('Location: ' . BASE_URL . '/index.php');
+        header('Location: ' . BASE_URL . '/admin/');
         exit;
     } else {
         $error = 'Incorrect username or password.';
