@@ -9,7 +9,20 @@ require_once __DIR__ . '/../includes/config.php';
 
 header('Content-Type: application/json');
 
-// Only accept POST
+// GET request — just return current count (for live polling)
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['count'])) {
+    try {
+        $db = getDB();
+        $stmt = $db->query('SELECT COUNT(*) as total FROM visits');
+        $totalViews = (int)$stmt->fetch()['total'];
+        echo json_encode(['totalViews' => $totalViews]);
+    } catch (Exception $e) {
+        echo json_encode(['totalViews' => 0]);
+    }
+    exit;
+}
+
+// Only accept POST for recording visits
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
