@@ -6,14 +6,29 @@ require_once __DIR__ . '/includes/functions.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Simple auth — default credentials: admin / nazarbandi
-    $adminUser = getenv('ADMIN_USERNAME') ?: 'admin';
-    $adminPassHash = getenv('ADMIN_PASSWORD_HASH') ?: '$2y$12$sNTzbAzErh5JQcLxUetwmO9.j9Pa/PRInnk0ZUP71Qn./AcTty7q6';
+    // Authenticate against the admin_users table in MySQL
+    $authenticated = false;
+    try {
+        $db = getDB();
+        $stmt = $db->prepare('SELECT password_hash FROM admin_users WHERE username = ? LIMIT 1');
+        $stmt->execute([$username]);
+        $row = $stmt->fetch();
+        if ($row && password_verify($password, $row['password_hash'])) {
+            $authenticated = true;
+        }
+    } catch (Exception $e) {
+        // DB connection failed — fall back to hardcoded credentials
+        $fallbackUser = 'admin';
+        $fallbackHash = '$2y$12$sNTzbAzErh5JQcLxUetwmO9.j9Pa/PRInnk0ZUP71Qn./AcTty7q6';
+        if ($username === $fallbackUser && password_verify($password, $fallbackHash)) {
+            $authenticated = true;
+        }
+    }
 
-    if ($username === $adminUser && password_verify($password, $adminPassHash)) {
+    if ($authenticated) {
         session_start();
         $_SESSION['admin'] = $username;
         header('Location: ' . BASE_URL . '/admin/');

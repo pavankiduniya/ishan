@@ -7,6 +7,45 @@
 define('SITE_TITLE', 'Nazarbandi');
 define('SITE_ROOT', dirname(__DIR__));
 
+// ─── Database Configuration ───────────────────────────────────────────
+// Detects environment: localhost uses socket-based connection,
+// production (Hostinger) uses TCP with credentials.
+if (in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1']) ||
+    php_sapi_name() === 'cli') {
+    // Local development — socket-based, no password
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'nazarbandi');
+    define('DB_USER', 'pavan.bhatt');
+    define('DB_PASS', '');
+    define('DB_SOCKET', '/tmp/mysql.sock');
+} else {
+    // Production (Hostinger)
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'u247231431_nazarbandi');
+    define('DB_USER', 'u247231431_nazarbandi');
+    define('DB_PASS', 'Kmnh#123');
+    define('DB_SOCKET', '');
+}
+
+/**
+ * Get a PDO database connection (singleton).
+ */
+function getDB(): PDO {
+    static $pdo = null;
+    if ($pdo === null) {
+        $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
+        if (DB_SOCKET) {
+            $dsn = 'mysql:unix_socket=' . DB_SOCKET . ';dbname=' . DB_NAME . ';charset=utf8mb4';
+        }
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]);
+    }
+    return $pdo;
+}
+
 // Photos are served from the main project's public folder
 // Adjust this path based on your deployment setup
 define('PHOTOS_DIR', realpath(SITE_ROOT . '/../public/photos'));
