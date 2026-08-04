@@ -6,7 +6,7 @@ require_once __DIR__ . '/includes/functions.php';
 
 $slug = $_GET['slug'] ?? '';
 if (!$slug) {
-    header('Location: ' . BASE_URL . '/blog.php');
+    header('Location: ' . BASE_URL . '/blog');
     exit;
 }
 
@@ -23,7 +23,7 @@ if (!$post) {
     http_response_code(404);
     $pageTitle = 'Not Found';
     require_once __DIR__ . '/includes/header.php';
-    echo '<div class="not-found"><h1>Post not found</h1><p><a href="' . BASE_URL . '/blog.php">&larr; Back to blog</a></p></div>';
+    echo '<div class="not-found"><h1>Post not found</h1><p><a href="' . BASE_URL . '/blog">&larr; Back to blog</a></p></div>';
     require_once __DIR__ . '/includes/footer.php';
     exit;
 }
@@ -62,13 +62,13 @@ require_once __DIR__ . '/includes/header.php';
         <nav class="archive-nav">
             <?php foreach ($archive as $g): ?>
             <div class="year-group">
-                <a href="<?= BASE_URL ?>/blog.php#y-<?= $g['year'] ?>" class="year-link">
+                <a href="<?= BASE_URL ?>/blog#y-<?= $g['year'] ?>" class="year-link">
                     <?= $g['year'] ?> <span>(<?= $g['count'] ?>)</span>
                 </a>
                 <ul>
                     <?php foreach ($g['months'] as $m): ?>
                     <li>
-                        <a href="<?= BASE_URL ?>/blog.php#y-<?= $g['year'] ?>-m-<?= $m['month'] ?>">
+                        <a href="<?= BASE_URL ?>/blog#y-<?= $g['year'] ?>-m-<?= $m['month'] ?>">
                             <?= e($m['label']) ?> <span>(<?= $m['count'] ?>)</span>
                         </a>
                     </li>
@@ -81,7 +81,7 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- Post Content -->
     <main class="post">
-        <a class="back" href="<?= BASE_URL ?>/blog.php">&larr; Back to blog</a>
+        <a class="back" href="<?= BASE_URL ?>/blog">&larr; Back to blog</a>
 
         <?php if (!empty($post['coverImage'])): ?>
         <div class="cover">

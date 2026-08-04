@@ -88,7 +88,7 @@ $recentVisits = $db->query("
             <p class="dash-card__value"><?= count($posts) ?></p>
             <p class="dash-card__label">Blog Posts</p>
         </div>
-        <p class="dash-card__sub"><a href="<?= BASE_URL ?>/admin/blog.php">Manage</a></p>
+        <p class="dash-card__sub"><a href="<?= BASE_URL ?>/admin/blog">Manage</a></p>
     </div>
 </div>
 
@@ -150,7 +150,7 @@ $recentVisits = $db->query("
     <section class="dash-panel">
         <div class="dash-panel__header">
             <h2>Recent Visits</h2>
-            <a href="<?= BASE_URL ?>/admin/analytics.php" class="dash-panel__link">View all →</a>
+            <a href="<?= BASE_URL ?>/admin/analytics" class="dash-panel__link">View all →</a>
         </div>
         <?php if (empty($recentVisits)): ?>
             <p class="empty">No visits yet.</p>
@@ -178,7 +178,7 @@ $recentVisits = $db->query("
     <section class="dash-panel">
         <div class="dash-panel__header">
             <h2>Photo Categories</h2>
-            <a href="<?= BASE_URL ?>/admin/photos.php" class="dash-panel__link">Manage →</a>
+            <a href="<?= BASE_URL ?>/admin/photos" class="dash-panel__link">Manage →</a>
         </div>
         <table class="data-table">
             <thead>
@@ -201,10 +201,10 @@ $recentVisits = $db->query("
 <section class="dash-panel">
     <div class="dash-panel__header">
         <h2>Recent Blog Posts</h2>
-        <a href="<?= BASE_URL ?>/admin/blog-edit.php" class="btn btn-primary btn-sm">+ New Post</a>
+        <a href="<?= BASE_URL ?>/admin/blog-edit" class="btn btn-primary btn-sm">+ New Post</a>
     </div>
     <?php if (empty($posts)): ?>
-        <p class="empty">No posts yet. <a href="<?= BASE_URL ?>/admin/blog-edit.php">Create one</a></p>
+        <p class="empty">No posts yet. <a href="<?= BASE_URL ?>/admin/blog-edit">Create one</a></p>
     <?php else: ?>
     <table class="data-table">
         <thead>
@@ -216,7 +216,7 @@ $recentVisits = $db->query("
                 <td><strong><?= e($post['title']) ?></strong></td>
                 <td><?= e($post['pubDate']) ?></td>
                 <td><?= e(substr($post['description'] ?? '', 0, 50)) ?></td>
-                <td><a href="<?= BASE_URL ?>/admin/blog-edit.php?slug=<?= urlencode($post['slug']) ?>" class="action">Edit</a></td>
+                <td><a href="<?= BASE_URL ?>/admin/blog-edit?slug=<?= urlencode($post['slug']) ?>" class="action">Edit</a></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

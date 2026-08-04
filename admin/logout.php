@@ -2,5 +2,5 @@
 require_once __DIR__ . '/../includes/config.php';
 session_start();
 session_destroy();
-header('Location: ' . BASE_URL . '/login.php');
+header('Location: ' . BASE_URL . '/login');
 exit;

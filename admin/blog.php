@@ -13,7 +13,7 @@ if (isset($_GET['delete'])) {
     if (file_exists($file)) {
         unlink($file);
     }
-    header('Location: ' . BASE_URL . '/admin/blog.php?notice=Post deleted.');
+    header('Location: ' . BASE_URL . '/admin/blog?notice=Post deleted.');
     exit;
 }
 
@@ -21,7 +21,7 @@ $posts = getBlogPosts();
 ?>
 
 <div class="toolbar">
-    <a class="btn btn-primary" href="<?= BASE_URL ?>/admin/blog-edit.php">+ New Post</a>
+    <a class="btn btn-primary" href="<?= BASE_URL ?>/admin/blog-edit">+ New Post</a>
 </div>
 
 <?php if (empty($posts)): ?>
@@ -43,8 +43,8 @@ $posts = getBlogPosts();
             <td><?= e($post['pubDate']) ?></td>
             <td><?= e(substr($post['description'] ?? '', 0, 60)) ?></td>
             <td class="actions">
-                <a href="<?= BASE_URL ?>/admin/blog-edit.php?slug=<?= urlencode($post['slug']) ?>" class="action">Edit</a>
-                <a href="<?= BASE_URL ?>/admin/blog.php?delete=<?= urlencode($post['slug']) ?>" class="action danger" onclick="return confirm('Delete this post?')">Delete</a>
+                <a href="<?= BASE_URL ?>/admin/blog-edit?slug=<?= urlencode($post['slug']) ?>" class="action">Edit</a>
+                <a href="<?= BASE_URL ?>/admin/blog?delete=<?= urlencode($post['slug']) ?>" class="action danger" onclick="return confirm('Delete this post?')">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>

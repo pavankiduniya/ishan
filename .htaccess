@@ -1,13 +1,11 @@
 RewriteEngine On
 
-# Redirect /php/blog/slug to blog post page
-RewriteRule ^blog/([a-zA-Z0-9_-]+)/?$ post.php?slug=$1 [L,QSA]
-
-# Clean URLs for main pages
-RewriteRule ^gallery/?$ gallery.php [L]
-RewriteRule ^blog/?$ blog.php [L]
-
-# If file/dir doesn't exist, serve index
-RewriteCond %{REQUEST_FILENAME} !-f
+# Remove .php extension from URLs
+# If the request doesn't have a trailing slash or file extension, check for .php
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^$ index.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L,QSA]
+
+# Blog post clean URL: /blog/slug
+RewriteRule ^blog/([a-zA-Z0-9_-]+)/?$ post.php?slug=$1 [L,QSA]

@@ -82,7 +82,7 @@ $allPhotos = getAllPhotos();
     <div class="social">
         <a href="https://www.instagram.com/ishan_kothari/" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="https://vsco.co" target="_blank" rel="noopener noreferrer">VSCO</a>
-        <a href="<?= BASE_URL ?>/blog.php">Blog</a>
+        <a href="<?= BASE_URL ?>/blog">Blog</a>
     </div>
 </section>
 

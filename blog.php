@@ -83,7 +83,7 @@ krsort($archive);
                         foreach ($monthPosts as $post):
                         ?>
                         <li>
-                            <a class="post-card" href="<?= BASE_URL ?>/post.php?slug=<?= urlencode($post['slug']) ?>">
+                            <a class="post-card" href="<?= BASE_URL ?>/post?slug=<?= urlencode($post['slug']) ?>">
                                 <div class="thumb">
                                     <?php if (!empty($post['coverImage'])): ?>
                                     <img src="<?= e($post['coverImage']) ?>" alt="<?= e($post['title']) ?>" loading="lazy">

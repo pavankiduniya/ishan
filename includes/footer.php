@@ -56,7 +56,7 @@
 
     // Initial track (records the visit + gets count)
     getPublicIp().then(function(clientIp) {
-        fetch('<?= BASE_URL ?>/api/track.php', {
+        fetch('<?= BASE_URL ?>/api/track', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ path: location.pathname, clientIp: clientIp }),
@@ -73,7 +73,7 @@
 
     // Silent poll every 10s to keep counter live
     setInterval(function() {
-        fetch('<?= BASE_URL ?>/api/track.php?count=1', { cache: 'no-store' })
+        fetch('<?= BASE_URL ?>/api/track?count=1', { cache: 'no-store' })
             .then(function(res) { return res.ok ? res.json() : null; })
             .then(function(data) {
                 if (data && typeof data.totalViews === 'number') {

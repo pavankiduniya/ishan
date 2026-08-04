@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!is_dir(DATA_DIR)) mkdir(DATA_DIR, 0755, true);
     file_put_contents(SITE_CONTENT_FILE, json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
-    header('Location: ' . BASE_URL . '/admin/site-content.php?notice=Content updated.#' . $section);
+    header('Location: ' . BASE_URL . '/admin/site-content?notice=Content updated.#' . $section);
     exit;
 }
 

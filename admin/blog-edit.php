@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!is_dir(BLOG_DIR)) mkdir(BLOG_DIR, 0755, true);
     file_put_contents(BLOG_DIR . '/' . $saveSlug . '.md', implode("\n", $lines));
 
-    header('Location: ' . BASE_URL . '/admin/blog.php?notice=Post saved.');
+    header('Location: ' . BASE_URL . '/admin/blog?notice=Post saved.');
     exit;
 }
 
@@ -97,7 +97,7 @@ require_once __DIR__ . '/layout_head.php';
 
     <div class="form-actions">
         <button type="submit" class="btn btn-primary">Save Post</button>
-        <a href="<?= BASE_URL ?>/admin/blog.php" class="btn btn-secondary">Cancel</a>
+        <a href="<?= BASE_URL ?>/admin/blog" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
 

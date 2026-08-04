@@ -42,15 +42,15 @@ $hasPosts = count($blogPosts) > 0;
 
         <?php if ($hasPhotos): ?>
         <div class="dropdown">
-            <a href="<?= BASE_URL ?>/gallery.php">Gallery</a>
+            <a href="<?= BASE_URL ?>/gallery">Gallery</a>
             <div class="dropdown-menu">
                 <?php foreach ($categories as $c): ?>
                 <div class="dropdown-group">
-                    <a href="<?= BASE_URL ?>/gallery.php#cat-<?= e($c['slug']) ?>"><?= e($c['label']) ?></a>
+                    <a href="<?= BASE_URL ?>/gallery#cat-<?= e($c['slug']) ?>"><?= e($c['label']) ?></a>
                     <?php if (!empty($c['subcategories'])): ?>
                     <div class="dropdown-sub">
                         <?php foreach ($c['subcategories'] as $s): ?>
-                        <a href="<?= BASE_URL ?>/gallery.php#cat-<?= e($c['slug']) ?>-sub-<?= e($s['slug']) ?>"><?= e($s['label']) ?></a>
+                        <a href="<?= BASE_URL ?>/gallery#cat-<?= e($c['slug']) ?>-sub-<?= e($s['slug']) ?>"><?= e($s['label']) ?></a>
                         <?php endforeach; ?>
                     </div>
                     <?php endif; ?>
@@ -63,10 +63,10 @@ $hasPosts = count($blogPosts) > 0;
         <a href="<?= BASE_URL ?>/#about">About</a>
         <a href="<?= BASE_URL ?>/#services">Services</a>
         <?php if ($hasPosts): ?>
-        <a href="<?= BASE_URL ?>/blog.php">Blog</a>
+        <a href="<?= BASE_URL ?>/blog">Blog</a>
         <?php endif; ?>
         <a href="<?= BASE_URL ?>/#contact">Contact</a>
-        <a href="<?= BASE_URL ?>/login.php" class="login-link">Login</a>
+        <a href="<?= BASE_URL ?>/login" class="login-link">Login</a>
     </nav>
 
     <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">

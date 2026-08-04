@@ -15,11 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if ($slug && PHOTOS_DIR) {
                 $dir = PHOTOS_DIR . '/' . $slug;
                 if (!is_dir($dir)) mkdir($dir, 0755, true);
-                header('Location: ' . BASE_URL . '/admin/photos.php?notice=Category "' . urlencode($name) . '" created.');
+                header('Location: ' . BASE_URL . '/admin/photos?notice=Category "' . urlencode($name) . '" created.');
                 exit;
             }
         }
-        header('Location: ' . BASE_URL . '/admin/photos.php?error=Invalid category name.');
+        header('Location: ' . BASE_URL . '/admin/photos?error=Invalid category name.');
         exit;
     }
 
@@ -31,11 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if ($slug && PHOTOS_DIR) {
                 $dir = PHOTOS_DIR . '/' . basename($category) . '/' . $slug;
                 if (!is_dir($dir)) mkdir($dir, 0755, true);
-                header('Location: ' . BASE_URL . '/admin/photos.php?notice=Subcategory "' . urlencode($name) . '" created.');
+                header('Location: ' . BASE_URL . '/admin/photos?notice=Subcategory "' . urlencode($name) . '" created.');
                 exit;
             }
         }
-        header('Location: ' . BASE_URL . '/admin/photos.php?error=Invalid subcategory name.');
+        header('Location: ' . BASE_URL . '/admin/photos?error=Invalid subcategory name.');
         exit;
     }
 
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $subcategory = $_POST['subcategory'] ?? '';
 
         if (!$category || !isset($_FILES['photos'])) {
-            header('Location: ' . BASE_URL . '/admin/photos.php?error=Select a category and photos.');
+            header('Location: ' . BASE_URL . '/admin/photos?error=Select a category and photos.');
             exit;
         }
 
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if ($subcategory) $targetDir .= '/' . basename($subcategory);
 
         if (!is_dir($targetDir)) {
-            header('Location: ' . BASE_URL . '/admin/photos.php?error=Target folder does not exist.');
+            header('Location: ' . BASE_URL . '/admin/photos?error=Target folder does not exist.');
             exit;
         }
 
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $uploaded++;
         }
 
-        header('Location: ' . BASE_URL . '/admin/photos.php?notice=' . $uploaded . ' photo(s) uploaded.');
+        header('Location: ' . BASE_URL . '/admin/photos?notice=' . $uploaded . ' photo(s) uploaded.');
         exit;
     }
 }
