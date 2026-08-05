@@ -33,11 +33,12 @@
     var gap = 12;
 
     function startScroll() {
-        // Calculate width of the first half (original set)
+        // Calculate width of the first half (original set) including gaps
         var halfWidth = 0;
         for (var i = 0; i < halfCount; i++) {
-            halfWidth += items[i].offsetWidth + gap;
+            halfWidth += items[i].offsetWidth;
         }
+        halfWidth += halfCount * gap; // gap between each item including after last (connects to duplicate)
 
         var speed = 40; // pixels per second
         var offset = 0;
@@ -48,7 +49,7 @@
             lastTime = now;
             offset -= speed * delta;
 
-            // When we've scrolled past the first set, reset seamlessly
+            // Reset seamlessly when scrolled past first set
             if (Math.abs(offset) >= halfWidth) {
                 offset += halfWidth;
             }
