@@ -354,7 +354,8 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 /* ===== GALLERY SIDEBAR ===== */
 .sidebar {
     position: sticky; top: 96px;
-    max-height: calc(100vh - 96px - 72px); overflow-y: auto;
+    display: flex; flex-direction: column;
+    align-self: start;
     z-index: 1;
     padding-right: 0.5rem;
 }
