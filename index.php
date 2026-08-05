@@ -8,32 +8,65 @@ $showSplash = true;
 require_once __DIR__ . '/includes/header.php';
 
 $content = getSiteContent();
+$db = getDB();
 $hero = $content['hero'];
 $about = $content['about'];
 $services = $content['services'];
-$allPhotos = getAllPhotos();
+
+// Hero photos from DB
+$heroPhotos = $db->query('
+    SELECT p.file_path, p.original_name
+    FROM hero_photos hp
+    JOIN photos p ON hp.photo_id = p.id
+    ORDER BY hp.sort_order, hp.id
+')->fetchAll();
 ?>
 
 <!-- Hero Section -->
 <section class="hero" id="home">
-    <div class="hero-content">
-        <p class="kicker"><?= e($hero['kicker']) ?></p>
-        <h1><?= e($hero['headingLine1']) ?><br><?= e($hero['headingLine2']) ?></h1>
-        <p class="sub"><?= e($hero['sub']) ?></p>
-        <a class="cta" href="<?= e($hero['ctaHref']) ?>"><?= e($hero['ctaLabel']) ?></a>
+    <div class="hero-split">
+        <div class="hero-text">
+            <p class="kicker"><?= e($hero['kicker']) ?></p>
+            <h1><?= e($hero['headingLine1']) ?><br><?= e($hero['headingLine2']) ?></h1>
+            <p class="sub"><?= e($hero['sub']) ?></p>
+            <a class="cta" href="<?= e($hero['ctaHref']) ?>"><?= e($hero['ctaLabel']) ?></a>
+        </div>
+
+        <?php if (!empty($heroPhotos)): ?>
+        <div class="hero-photos">
+            <div class="hero-marquee">
+                <div class="hero-marquee__track">
+                    <?php foreach ($heroPhotos as $hp): ?>
+                    <div class="hero-marquee__item">
+                        <img src="<?= e($hp['file_path']) ?>" alt="<?= e($hp['original_name']) ?>" loading="lazy">
+                    </div>
+                    <?php endforeach; ?>
+                    <!-- Duplicate for seamless loop -->
+                    <?php foreach ($heroPhotos as $hp): ?>
+                    <div class="hero-marquee__item">
+                        <img src="<?= e($hp['file_path']) ?>" alt="<?= e($hp['original_name']) ?>" loading="lazy">
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
     <a class="scroll-cue" href="#work" aria-label="Scroll to work">&darr;</a>
 </section>
 
 <!-- Gallery Preview Section -->
-<?php if (count($allPhotos) > 0): ?>
+<?php
+$previewPhotos = $db->query('SELECT file_path, original_name FROM photos ORDER BY RAND() LIMIT 7')->fetchAll();
+if (!empty($previewPhotos)):
+?>
 <section class="gallery" id="work">
     <div class="heading">
         <p class="kicker">Selected work</p>
         <h2>A few frames</h2>
     </div>
 
-    <div class="grid" id="gallery-grid" data-pool='<?= htmlspecialchars(json_encode($allPhotos), ENT_QUOTES) ?>'></div>
+    <div class="grid" id="gallery-grid" data-pool='<?= htmlspecialchars(json_encode(array_map(function($p) { return ['src' => $p['file_path'], 'gallery' => $p['file_path'], 'filename' => $p['original_name']]; }, $previewPhotos)), ENT_QUOTES) ?>'></div>
 </section>
 <?php endif; ?>
 
