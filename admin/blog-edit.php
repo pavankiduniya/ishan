@@ -85,8 +85,15 @@ require_once __DIR__ . '/layout_head.php';
             <input type="date" id="pubDate" name="pubDate" value="<?= e($post['published_at'] ?? date('Y-m-d')) ?>">
         </div>
         <div class="form-group">
-            <label for="coverImage">Cover Image URL (optional)</label>
-            <input type="text" id="coverImage" name="coverImage" value="<?= e($post['cover_image'] ?? '') ?>" placeholder="/uploads/blog/...">
+            <label for="coverImage">Cover Image</label>
+            <div style="display:flex;gap:0.5rem;align-items:flex-end;">
+                <input type="text" id="coverImage" name="coverImage" value="<?= e($post['cover_image'] ?? '') ?>" placeholder="/uploads/blog/..." style="flex:1;">
+                <button type="button" class="btn btn-secondary" onclick="uploadCover()">Upload</button>
+            </div>
+            <?php if (!empty($post['cover_image'])): ?>
+            <img src="<?= e($post['cover_image']) ?>" style="margin-top:0.5rem;max-height:100px;border-radius:4px;">
+            <?php endif; ?>
+            <input type="file" id="cover-file" accept="image/*" style="display:none;">
         </div>
     </div>
 
@@ -161,6 +168,28 @@ function imageHandler() {
             }
         })
         .catch(function() { alert('Upload failed'); });
+    };
+}
+
+// Cover image upload
+function uploadCover() {
+    var input = document.getElementById('cover-file');
+    input.click();
+    input.onchange = function() {
+        var file = input.files[0];
+        if (!file) return;
+        var formData = new FormData();
+        formData.append('image', file);
+        fetch('<?= BASE_URL ?>/api/upload-image.php', { method: 'POST', body: formData })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.url) {
+                    document.getElementById('coverImage').value = data.url;
+                } else {
+                    alert(data.error || 'Upload failed');
+                }
+            })
+            .catch(function() { alert('Upload failed'); });
     };
 }
 
