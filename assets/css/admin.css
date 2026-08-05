@@ -440,3 +440,7 @@ button, input, select, textarea { font-family: inherit; }
 /* Service item row alignment */
 .service-item { align-items: flex-end; }
 .service-item .icon-btn { margin-bottom: 4px; flex-shrink: 0; }
+
+/* Contact link item row alignment */
+.contact-link-item { align-items: flex-end; }
+.contact-link-item .icon-btn { margin-bottom: 4px; flex-shrink: 0; }

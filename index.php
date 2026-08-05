@@ -86,15 +86,17 @@ $heroPhotos = $db->query('
 </section>
 
 <!-- Contact Section -->
+<?php $contact = $content['contact']; ?>
 <section class="contact" id="contact">
     <p class="kicker">Get in touch</p>
     <h2>Let's make something.</h2>
     <p class="sub">For bookings, collaborations or just to say hello.</p>
-    <a class="email" href="mailto:ishankothari1999@gmail.com">ishankothari1999@gmail.com</a>
+    <a class="email" href="mailto:<?= e($contact['email']) ?>"><?= e($contact['email']) ?></a>
 
     <div class="social">
-        <a href="https://www.instagram.com/ishan_kothari/" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="https://vsco.co" target="_blank" rel="noopener noreferrer">VSCO</a>
+        <?php foreach ($contact['links'] as $link): ?>
+        <a href="<?= e($link['url']) ?>" target="_blank" rel="noopener noreferrer"><?= e($link['name']) ?></a>
+        <?php endforeach; ?>
         <a href="<?= BASE_URL ?>/blog">Blog</a>
     </div>
 </section>

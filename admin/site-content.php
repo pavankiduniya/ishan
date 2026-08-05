@@ -85,6 +85,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         saveSetting('watermark_text', $text);
     }
 
+    // Contact
+    if ($section === 'contact') {
+        saveSetting('contact_email', trim($_POST['contact_email'] ?? ''));
+
+        // Rebuild links from POST
+        $links = [];
+        if (isset($_POST['link_name']) && is_array($_POST['link_name'])) {
+            for ($i = 0; $i < count($_POST['link_name']); $i++) {
+                $name = trim($_POST['link_name'][$i] ?? '');
+                $url = trim($_POST['link_url'][$i] ?? '');
+                if ($name && $url) {
+                    $links[] = ['name' => $name, 'url' => $url];
+                }
+            }
+        }
+        saveSetting('contact_links', json_encode($links, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    }
+
     header('Location: ' . BASE_URL . '/admin/site-content.php?notice=Content updated.#' . $section);
     exit;
 }
@@ -96,6 +114,7 @@ $hero = $content['hero'];
 $about = $content['about'];
 $services = $content['services'];
 $watermark = $content['watermark'] ?? 'ik';
+$contact = $content['contact'];
 ?>
 
 <!-- Watermark Setting -->
@@ -229,12 +248,55 @@ $watermark = $content['watermark'] ?? 'ik';
     </form>
 </section>
 
+<!-- Contact Section Editor -->
+<section class="dash-panel" id="contact">
+    <div class="dash-panel__header"><h2>Contact / Social Links</h2></div>
+    <form method="POST" class="form-stack">
+        <input type="hidden" name="section" value="contact">
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="contact_email" value="<?= e($contact['email']) ?>" placeholder="your@email.com">
+        </div>
+
+        <h3 style="margin: 1.5rem 0 1rem; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; color: #666;">Social / Custom Links</h3>
+        <p style="color:#888; font-size:0.8rem; margin:0 0 1rem;">Add any links — Instagram, WhatsApp, Twitter, portfolio, etc. Name is the label shown on the site.</p>
+        <div id="contact-links-list">
+            <?php foreach ($contact['links'] as $link): ?>
+            <div class="form-row contact-link-item">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="link_name[]" value="<?= e($link['name']) ?>" placeholder="e.g. Instagram">
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" name="link_url[]" value="<?= e($link['url']) ?>" placeholder="https://...">
+                </div>
+                <button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest('.contact-link-item').remove()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+        <button type="button" class="btn btn-secondary" onclick="addContactLink()">+ Add Link</button>
+        <br><br>
+        <button type="submit" class="btn btn-primary">Save Contact</button>
+    </form>
+</section>
+
 <script>
 function addServiceItem() {
     var list = document.getElementById('services-list');
     var row = document.createElement('div');
     row.className = 'form-row service-item';
     row.innerHTML = '<div class="form-group"><label>Title</label><input type="text" name="item_title[]" value=""></div><div class="form-group"><label>Description</label><input type="text" name="item_desc[]" value=""></div><button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest(\'.service-item\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>';
+    list.appendChild(row);
+}
+function addContactLink() {
+    var list = document.getElementById('contact-links-list');
+    var row = document.createElement('div');
+    row.className = 'form-row contact-link-item';
+    row.innerHTML = '<div class="form-group"><label>Name</label><input type="text" name="link_name[]" value="" placeholder="e.g. WhatsApp"></div><div class="form-group"><label>URL</label><input type="url" name="link_url[]" value="" placeholder="https://..."></div><button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest(\'.contact-link-item\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>';
     list.appendChild(row);
 }
 </script>

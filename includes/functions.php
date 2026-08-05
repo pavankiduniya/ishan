@@ -221,6 +221,12 @@ function getSiteContent(): array {
             ],
         ],
         'watermark' => 'ik',
+        'contact' => [
+            'email' => 'ishankothari1999@gmail.com',
+            'links' => [
+                ['name' => 'Instagram', 'url' => 'https://www.instagram.com/ishan_kothari/'],
+            ],
+        ],
     ];
 
     try {
@@ -258,6 +264,12 @@ function getSiteContent(): array {
                         : $defaults['services']['items'],
                 ],
                 'watermark' => $settings['watermark_text'] ?? $defaults['watermark'],
+                'contact' => [
+                    'email' => $settings['contact_email'] ?? $defaults['contact']['email'],
+                    'links' => isset($settings['contact_links'])
+                        ? (json_decode($settings['contact_links'], true) ?: $defaults['contact']['links'])
+                        : $defaults['contact']['links'],
+                ],
             ];
             return $content;
         }
