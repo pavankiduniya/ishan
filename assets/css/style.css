@@ -125,16 +125,17 @@ a { color: inherit; }
 
 /* Hero Photos Marquee */
 .hero-photos {
-    position: relative; overflow: hidden; height: 70vh;
+    position: relative; overflow: hidden; height: 100%;
     display: flex; align-items: center;
+    margin: -8rem -3rem -4rem 0;
 }
 .hero-marquee { width: 100%; overflow: hidden; }
 .hero-marquee__track {
-    display: flex; gap: 0;
+    display: flex; gap: 12px;
     will-change: transform;
 }
 .hero-marquee__item {
-    flex-shrink: 0; width: 280px; height: 380px; overflow: hidden;
+    flex-shrink: 0; width: 280px; height: 100vh; overflow: hidden;
 }
 .hero-marquee__item img {
     width: 100%; height: 100%; object-fit: cover; display: block;
@@ -152,14 +153,14 @@ a { color: inherit; }
 
 @media (max-width: 900px) {
     .hero-split {
-        grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem;
-        gap: 3rem; min-height: auto;
+        grid-template-columns: 1fr; padding: 7rem 1.5rem 2rem;
+        gap: 2rem; min-height: auto;
     }
-    .hero-photos { height: 50vh; }
-    .hero-marquee__item { width: 200px; height: 280px; }
+    .hero-photos { height: 50vh; margin: 0 -1.5rem; }
+    .hero-marquee__item { width: 200px; height: 50vh; }
 }
 @media (max-width: 560px) {
-    .hero-marquee__item { width: 160px; height: 220px; }
+    .hero-marquee__item { width: 160px; height: 40vh; }
 }
 footer {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
@@ -231,7 +232,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 .about {
     display: grid; grid-template-columns: 0.9fr 1.1fr;
     gap: 4rem; align-items: center;
-    max-width: 1600px; margin: 0 auto; padding: 5rem 3rem;
+    max-width: 1600px; margin: 0 auto; padding: 3rem 3rem;
 }
 .about .copy { max-width: 640px; }
 .about .portrait {
