@@ -102,7 +102,7 @@ require_once __DIR__ . '/includes/header.php';
     $aboutInfo = $siteContent['about'];
     $contactInfo = $siteContent['contact'];
     ?>
-    <aside class="right-rail" style="position:sticky;top:96px;align-self:start;">
+    <aside class="right-rail" style="position:sticky;top:120px;align-self:start;">
         <div class="widget author">
             <?php if (!empty($aboutInfo['photo'])): ?>
             <img class="avatar-img" src="<?= e($aboutInfo['photo']) ?>" alt="<?= e($aboutInfo['heading']) ?>">
