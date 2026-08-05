@@ -58,9 +58,9 @@ $rows = $db->query('SELECT category_id, COUNT(*) as cnt FROM photos GROUP BY cat
 foreach ($rows as $r) $photoCounts[$r['category_id']] = (int)$r['cnt'];
 ?>
 
-<div class="gallery-layout" style="align-items:start;">
+<div class="gallery-layout">
     <!-- Sidebar -->
-    <aside class="sidebar" id="right-rail">
+    <aside class="sidebar">
         <p class="kicker">Categories</p>
         <p class="total"><?= $totalPhotos ?> photos</p>
 
