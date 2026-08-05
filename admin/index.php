@@ -224,6 +224,78 @@ $recentVisits = $db->query("
     <?php endif; ?>
 </section>
 
+<!-- Disk Usage -->
+<?php
+// Get disk space
+$diskTotal = @disk_total_space(SITE_ROOT);
+$diskFree = @disk_free_space(SITE_ROOT);
+$diskUsed = $diskTotal ? $diskTotal - $diskFree : 0;
+$diskPercent = $diskTotal ? round(($diskUsed / $diskTotal) * 100, 1) : 0;
+
+function formatBytes($bytes): string {
+    if ($bytes >= 1073741824) return round($bytes / 1073741824, 2) . ' GB';
+    if ($bytes >= 1048576) return round($bytes / 1048576, 2) . ' MB';
+    if ($bytes >= 1024) return round($bytes / 1024, 2) . ' KB';
+    return $bytes . ' B';
+}
+
+// Get top 5 folders by size
+function getDirSize(string $dir): int {
+    $size = 0;
+    if (!is_dir($dir)) return 0;
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS)) as $file) {
+        $size += $file->getSize();
+    }
+    return $size;
+}
+
+$topFolders = [];
+$scanDir = SITE_ROOT;
+foreach (scandir($scanDir) as $entry) {
+    if ($entry === '.' || $entry === '..' || $entry === '.git') continue;
+    $path = $scanDir . '/' . $entry;
+    if (is_dir($path)) {
+        $topFolders[] = ['name' => $entry, 'size' => getDirSize($path)];
+    }
+}
+usort($topFolders, function($a, $b) { return $b['size'] - $a['size']; });
+$topFolders = array_slice($topFolders, 0, 5);
+?>
+
+<div class="dash-row">
+    <section class="dash-panel">
+        <div class="dash-panel__header"><h2>Disk Usage</h2></div>
+        <div class="disk-bar-wrap">
+            <div class="disk-bar">
+                <div class="disk-bar__fill" style="width: <?= $diskPercent ?>%"></div>
+            </div>
+            <div class="disk-bar-info">
+                <span><?= formatBytes($diskUsed) ?> used</span>
+                <span><?= formatBytes($diskFree) ?> free</span>
+                <span><?= formatBytes($diskTotal) ?> total</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="dash-panel">
+        <div class="dash-panel__header"><h2>Top 5 Folders</h2></div>
+        <table class="data-table">
+            <thead><tr><th>Folder</th><th>Size</th></tr></thead>
+            <tbody>
+                <?php foreach ($topFolders as $f): ?>
+                <tr>
+                    <td><code><?= e($f['name']) ?>/</code></td>
+                    <td><?= formatBytes($f['size']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+                <?php if (empty($topFolders)): ?>
+                <tr><td colspan="2" class="empty">No folders found.</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </section>
+</div>
+
 <script>
 // Dashboard auto-refresh every 10s
 (function() {

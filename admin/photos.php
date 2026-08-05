@@ -48,6 +48,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
 
+    // Rename category
+    if ($_POST['action'] === 'rename_category') {
+        $id = (int)($_POST['category_id'] ?? 0);
+        $newName = trim($_POST['new_name'] ?? '');
+        if ($id && $newName) {
+            $newSlug = slugify($newName);
+            $stmt = $db->prepare('UPDATE categories SET name = ?, slug = ? WHERE id = ?');
+            $stmt->execute([$newName, $newSlug, $id]);
+            header('Location: ' . BASE_URL . '/admin/photos.php?notice=Category renamed.');
+            exit;
+        }
+        header('Location: ' . BASE_URL . '/admin/photos.php?error=Invalid name.');
+        exit;
+    }
+
     // Upload photos
     if ($_POST['action'] === 'upload') {
         $categoryId = (int)($_POST['category_id'] ?? 0);
@@ -224,7 +239,8 @@ require_once __DIR__ . '/layout_head.php';
                 <td><code><?= e($c['slug']) ?></code></td>
                 <td><?= $c['parent_id'] ? '<span class="tag">Sub of ' . e($parentName) . '</span>' : 'Category' ?></td>
                 <td><?= $photoCounts[$c['id']] ?? 0 ?></td>
-                <td>
+                <td class="actions">
+                    <button type="button" class="action" onclick="renameCategory(<?= $c['id'] ?>, '<?= e(addslashes($c['name'])) ?>')">Edit</button>
                     <form method="POST" style="display:inline" onsubmit="return confirm('Delete this category and all its photos?')">
                         <input type="hidden" name="action" value="delete_category">
                         <input type="hidden" name="category_id" value="<?= $c['id'] ?>">
@@ -262,5 +278,23 @@ if (!empty($recentPhotos)):
     </div>
 </section>
 <?php endif; ?>
+
+<!-- Rename Form (hidden, used by JS) -->
+<form id="rename-form" method="POST" style="display:none">
+    <input type="hidden" name="action" value="rename_category">
+    <input type="hidden" name="category_id" id="rename-id">
+    <input type="hidden" name="new_name" id="rename-name">
+</form>
+
+<script>
+function renameCategory(id, currentName) {
+    var newName = prompt('Rename category:', currentName);
+    if (newName && newName.trim() && newName.trim() !== currentName) {
+        document.getElementById('rename-id').value = id;
+        document.getElementById('rename-name').value = newName.trim();
+        document.getElementById('rename-form').submit();
+    }
+}
+</script>
 
 <?php require_once __DIR__ . '/layout_foot.php'; ?>

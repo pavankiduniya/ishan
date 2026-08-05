@@ -398,3 +398,18 @@ button, input, select, textarea { font-family: inherit; }
     background: rgba(255,255,255,0.2); color: #fff; font-size: 0.65rem;
 }
 .photo-admin-meta .action.danger { color: #ff6b6b; font-size: 0.85rem; }
+
+/* ===== DISK USAGE BAR ===== */
+.disk-bar-wrap { padding: 0.5rem 0; }
+.disk-bar {
+    height: 10px; background: #f0f0f0; border-radius: 5px;
+    overflow: hidden; margin-bottom: 0.75rem;
+}
+.disk-bar__fill {
+    height: 100%; background: linear-gradient(90deg, #4a90d9, #8b5cf6);
+    border-radius: 5px; transition: width 0.4s ease;
+}
+.disk-bar-info {
+    display: flex; justify-content: space-between;
+    font-size: 0.75rem; color: #888;
+}
