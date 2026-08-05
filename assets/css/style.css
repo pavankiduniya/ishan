@@ -638,3 +638,15 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 }
 .scroll-top:hover { opacity: 1; transform: translateY(-2px); }
 .scroll-top[hidden] { display: none; }
+
+/* Right rail avatar image */
+.right-rail .avatar-img {
+    width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
+    display: block; margin-bottom: 1rem;
+}
+.right-rail .follow-links a {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid #eee;
+    transition: transform 0.2s ease;
+}
+.right-rail .follow-links a:hover { transform: translateY(-2px); }

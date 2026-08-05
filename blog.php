@@ -109,26 +109,40 @@ krsort($archive);
     </main>
 
     <!-- Right Rail -->
+    <?php
+    $siteContent = getSiteContent();
+    $aboutInfo = $siteContent['about'];
+    $contactInfo = $siteContent['contact'];
+    ?>
     <aside class="right-rail">
         <div class="widget author">
+            <?php if (!empty($aboutInfo['photo'])): ?>
+            <img class="avatar-img" src="<?= e($aboutInfo['photo']) ?>" alt="<?= e($aboutInfo['heading']) ?>">
+            <?php else: ?>
             <div class="avatar"></div>
-            <h4>Ishan Kothari</h4>
-            <p>Photographer and videographer covering people, places, cultures and food.</p>
+            <?php endif; ?>
+            <h4><?= e(str_replace("Hello, I'm ", '', $aboutInfo['heading'])) ?></h4>
+            <p><?= e($aboutInfo['paragraphs'][0] ?? '') ?></p>
             <a href="<?= BASE_URL ?>/#about">More about me &rarr;</a>
         </div>
 
         <div class="widget">
             <p class="widget-title">Get in touch</p>
-            <a href="mailto:ishankothari1999@gmail.com">ishankothari1999@gmail.com</a>
+            <a href="mailto:<?= e($contactInfo['email']) ?>"><?= e($contactInfo['email']) ?></a>
         </div>
 
+        <?php if (!empty($contactInfo['links'])): ?>
         <div class="widget">
             <p class="widget-title">Follow</p>
             <div class="follow-links">
-                <a href="https://www.instagram.com/ishan_kothari/" target="_blank" rel="noopener noreferrer">Instagram</a>
-                <a href="https://vsco.co" target="_blank" rel="noopener noreferrer">VSCO</a>
+                <?php foreach ($contactInfo['links'] as $link): ?>
+                <a href="<?= e($link['url']) ?>" target="_blank" rel="noopener noreferrer" title="<?= e($link['name']) ?>">
+                    <?= getSocialIcon($link['name']) ?>
+                </a>
+                <?php endforeach; ?>
             </div>
         </div>
+        <?php endif; ?>
     </aside>
 </div>
 
