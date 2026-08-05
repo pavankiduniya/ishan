@@ -59,7 +59,7 @@
         fetch('<?= BASE_URL ?>/api/track.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ path: location.pathname, clientIp: clientIp }),
+            body: JSON.stringify({ path: location.pathname + location.search, clientIp: clientIp }),
             keepalive: true
         })
         .then(function(res) { return res.ok ? res.json() : null; })

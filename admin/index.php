@@ -141,6 +141,9 @@ $recentVisits = $db->query("
 </div>
 
 <!-- Tables Row -->
+<?php
+$topPages = $db->query('SELECT path, COUNT(*) as views, COUNT(DISTINCT visitor_id) as uniq FROM visits GROUP BY path ORDER BY views DESC LIMIT 5')->fetchAll();
+?>
 <div class="dash-row">
     <section class="dash-panel">
         <div class="dash-panel__header">
@@ -172,6 +175,34 @@ $recentVisits = $db->query("
 
     <section class="dash-panel">
         <div class="dash-panel__header">
+            <h2>Top Pages</h2>
+            <a href="<?= BASE_URL ?>/admin/analytics" class="dash-panel__link">View all →</a>
+        </div>
+        <?php if (empty($topPages)): ?>
+            <p class="empty">No data yet.</p>
+        <?php else: ?>
+        <table class="data-table">
+            <thead>
+                <tr><th>Page</th><th>Views</th><th>Unique</th></tr>
+            </thead>
+            <tbody>
+                <?php foreach ($topPages as $tp): ?>
+                <tr>
+                    <td><code><?= e($tp['path']) ?></code></td>
+                    <td><?= $tp['views'] ?></td>
+                    <td><?= $tp['uniq'] ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <?php endif; ?>
+    </section>
+</div>
+
+<!-- Recent Posts -->
+<div class="dash-row">
+    <section class="dash-panel">
+        <div class="dash-panel__header">
             <h2>Photo Categories</h2>
             <a href="<?= BASE_URL ?>/admin/photos" class="dash-panel__link">Manage →</a>
         </div>
@@ -194,14 +225,12 @@ $recentVisits = $db->query("
         </table>
         <?php endif; ?>
     </section>
-</div>
 
-<!-- Recent Posts -->
-<section class="dash-panel">
-    <div class="dash-panel__header">
-        <h2>Recent Blog Posts</h2>
-        <a href="<?= BASE_URL ?>/admin/blog-edit" class="btn btn-primary btn-sm">+ New Post</a>
-    </div>
+    <section class="dash-panel">
+        <div class="dash-panel__header">
+            <h2>Recent Blog Posts</h2>
+            <a href="<?= BASE_URL ?>/admin/blog-edit" class="btn btn-primary btn-sm">+ New Post</a>
+        </div>
     <?php if (empty($posts)): ?>
         <p class="empty">No posts yet. <a href="<?= BASE_URL ?>/admin/blog-edit">Create one</a></p>
     <?php else: ?>
@@ -221,7 +250,8 @@ $recentVisits = $db->query("
         </tbody>
     </table>
     <?php endif; ?>
-</section>
+    </section>
+</div>
 
 <!-- Disk Usage -->
 <?php
