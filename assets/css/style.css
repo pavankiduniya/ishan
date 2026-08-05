@@ -101,12 +101,12 @@ a { color: inherit; }
 /* ===== HERO ===== */
 .hero { position: relative; overflow: hidden; }
 .hero-split {
-    display: grid; grid-template-columns: 1fr 1fr;
-    align-items: center;
+    position: relative;
+    display: block;
     padding: 8rem 3rem 4rem;
     max-width: 1600px; margin: 0 auto;
 }
-.hero-text { max-width: 540px; }
+.hero-text { max-width: 480px; position: relative; z-index: 2; }
 .hero .kicker {
     font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;
     color: #888; margin: 0 0 1.5rem;
@@ -125,12 +125,12 @@ a { color: inherit; }
 
 /* Hero Photos Marquee */
 .hero-photos {
-    position: relative; overflow: hidden;
-    display: flex; align-items: center;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    position: absolute; top: 0; right: 0; bottom: 0; width: 65%;
+    overflow: hidden; display: flex; align-items: center;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%);
+    mask-image: linear-gradient(to right, transparent 0%, black 8%);
 }
-.hero-marquee { width: 100%; overflow: hidden; }
+.hero-marquee { width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; }
 .hero-marquee__track {
     display: flex; gap: 12px;
     will-change: transform;
@@ -154,14 +154,19 @@ a { color: inherit; }
 
 @media (max-width: 900px) {
     .hero-split {
-        grid-template-columns: 1fr; padding: 7rem 1.5rem 2rem;
-        gap: 2rem; min-height: auto;
+        display: block; padding: 7rem 1.5rem 2rem;
     }
-    .hero-photos { margin: 0 -1.5rem; }
+    .hero-text { max-width: 100%; }
+    .hero-photos {
+        position: relative; width: 100%; height: 300px;
+        margin: 2rem -1.5rem 0; width: calc(100% + 3rem);
+        -webkit-mask-image: none; mask-image: none;
+    }
     .hero-marquee__item { width: 200px; height: 300px; }
 }
 @media (max-width: 560px) {
     .hero-marquee__item { width: 160px; height: 240px; }
+    .hero-photos { height: 240px; }
 }
 footer {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
