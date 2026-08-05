@@ -327,10 +327,9 @@ if ($totalPhotosCount > 0):
             $catPath = $photo['parent_name'] ? $photo['parent_name'] . ' → ' . $photo['category_name'] : $photo['category_name'];
         ?>
         <div class="photo-admin-item">
-            <img src="<?= e($photo['file_path']) ?>" alt="<?= e($photo['original_name']) ?>" loading="lazy">
-            <div class="photo-admin-meta">
-                <span class="tag"><?= e($catPath) ?></span>
-                <div style="display:flex;gap:4px;align-items:center;">
+            <div class="photo-admin-img">
+                <img src="<?= e($photo['file_path']) ?>" alt="<?= e($photo['original_name']) ?>" loading="lazy">
+                <div class="photo-admin-actions">
                     <button type="button" class="icon-btn" title="Move to another category" onclick="movePhoto(<?= $photo['id'] ?>, '<?= e(addslashes($photo['original_name'])) ?>')" style="width:20px;height:20px;background:rgba(255,255,255,0.9);border:none;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
@@ -343,6 +342,7 @@ if ($totalPhotosCount > 0):
                     </form>
                 </div>
             </div>
+            <p class="photo-admin-cat"><?= e($catPath) ?></p>
         </div>
         <?php endforeach; ?>
     </div>
