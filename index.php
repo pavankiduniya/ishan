@@ -52,23 +52,8 @@ $heroPhotos = $db->query('
         </div>
         <?php endif; ?>
     </div>
-    <a class="scroll-cue" href="#work" aria-label="Scroll to work">&darr;</a>
+    <a class="scroll-cue" href="#about" aria-label="Scroll down">&darr;</a>
 </section>
-
-<!-- Gallery Preview Section -->
-<?php
-$previewPhotos = $db->query('SELECT file_path, original_name FROM photos ORDER BY RAND() LIMIT 7')->fetchAll();
-if (!empty($previewPhotos)):
-?>
-<section class="gallery" id="work">
-    <div class="heading">
-        <p class="kicker">Selected work</p>
-        <h2>A few frames</h2>
-    </div>
-
-    <div class="grid" id="gallery-grid" data-pool='<?= htmlspecialchars(json_encode(array_map(function($p) { return ['src' => $p['file_path'], 'gallery' => $p['file_path'], 'filename' => $p['original_name']]; }, $previewPhotos)), ENT_QUOTES) ?>'></div>
-</section>
-<?php endif; ?>
 
 <!-- About Section -->
 <section class="about" id="about">

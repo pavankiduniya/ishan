@@ -59,6 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         saveSetting('services_items', json_encode($items, JSON_UNESCAPED_UNICODE));
     }
 
+    // Watermark
+    if ($section === 'watermark') {
+        $text = trim($_POST['watermark_text'] ?? '');
+        saveSetting('watermark_text', $text);
+    }
+
     header('Location: ' . BASE_URL . '/admin/site-content.php?notice=Content updated.#' . $section);
     exit;
 }
@@ -69,7 +75,19 @@ $content = getSiteContent();
 $hero = $content['hero'];
 $about = $content['about'];
 $services = $content['services'];
+$watermark = $content['watermark'] ?? 'ik';
 ?>
+
+<!-- Watermark Setting -->
+<section class="dash-panel" id="watermark">
+    <div class="dash-panel__header"><h2>Photo Watermark</h2></div>
+    <p style="color:#666;font-size:0.85rem;margin:0 0 1rem;">Leave empty to remove watermark from all photos. Uses cursive font (Great Vibes).</p>
+    <form method="POST" class="form-inline">
+        <input type="hidden" name="section" value="watermark">
+        <input type="text" name="watermark_text" value="<?= e($watermark) ?>" placeholder="e.g. ik" style="width:120px;">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</section>
 
 <!-- Hero Section Editor -->
 <section class="dash-panel" id="hero">

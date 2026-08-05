@@ -49,8 +49,6 @@ $hasPosts = count($blogPosts) > 0;
     <a class="brand" href="<?= BASE_URL ?>/">Nazarbandi</a>
 
     <nav class="links" id="nav-links">
-        <a href="<?= BASE_URL ?>/#work">Work</a>
-
         <?php if ($hasPhotos): ?>
         <div class="dropdown">
             <a href="<?= BASE_URL ?>/gallery">Gallery</a>

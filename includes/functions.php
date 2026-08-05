@@ -196,8 +196,8 @@ function getSiteContent(): array {
             'headingLine1' => 'People, places,',
             'headingLine2' => 'cultures & food.',
             'sub' => "I'm Ishan Kothari — capturing the essence of people, places, cultures and food, one honest frame at a time.",
-            'ctaLabel' => 'View the work',
-            'ctaHref' => '#work',
+            'ctaLabel' => 'View the gallery',
+            'ctaHref' => '/gallery',
         ],
         'about' => [
             'kicker' => 'About',
@@ -220,6 +220,7 @@ function getSiteContent(): array {
                 ['title' => 'Videography', 'desc' => 'Short-form and documentary video, shot and edited end to end.'],
             ],
         ],
+        'watermark' => 'ik',
     ];
 
     try {
@@ -256,6 +257,7 @@ function getSiteContent(): array {
                         ? (json_decode($settings['services_items'], true) ?: $defaults['services']['items'])
                         : $defaults['services']['items'],
                 ],
+                'watermark' => $settings['watermark_text'] ?? $defaults['watermark'],
             ];
             return $content;
         }

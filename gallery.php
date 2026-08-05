@@ -98,11 +98,14 @@ foreach ($rows as $r) $photoCounts[$r['category_id']] = (int)$r['cnt'];
         <?php if (empty($photos)): ?>
             <p class="empty">No photos yet.</p>
         <?php else: ?>
+            <?php $watermark = getSiteContent()['watermark'] ?? ''; ?>
             <div class="photo-grid">
                 <?php foreach ($photos as $p): ?>
                 <figure>
                     <img src="<?= e($p['file_path']) ?>" data-full="<?= e($p['file_path']) ?>" alt="<?= e($p['original_name']) ?>" loading="lazy">
-                    <span class="watermark">ik</span>
+                    <?php if ($watermark): ?>
+                    <span class="watermark"><?= e($watermark) ?></span>
+                    <?php endif; ?>
                 </figure>
                 <?php endforeach; ?>
             </div>
