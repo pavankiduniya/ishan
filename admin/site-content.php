@@ -37,8 +37,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         saveSetting('about_heading', trim($_POST['heading'] ?? ''));
         saveSetting('about_signature', trim($_POST['signature'] ?? ''));
         $paragraphs = trim($_POST['paragraphs'] ?? '');
-        // Store with \n\n as separator
         saveSetting('about_paragraphs', $paragraphs);
+
+        // Handle photo upload
+        if (isset($_FILES['about_photo']) && $_FILES['about_photo']['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($_FILES['about_photo']['name'], PATHINFO_EXTENSION));
+            if (in_array($ext, IMAGE_EXTENSIONS)) {
+                $uploadDir = SITE_ROOT . '/uploads/about';
+                if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                $filename = 'about-photo.' . $ext;
+                move_uploaded_file($_FILES['about_photo']['tmp_name'], $uploadDir . '/' . $filename);
+                saveSetting('about_photo', '/uploads/about/' . $filename . '?v=' . time());
+            }
+        }
+
+        // Remove photo if requested
+        if (isset($_POST['remove_photo']) && $_POST['remove_photo'] === '1') {
+            $uploadDir = SITE_ROOT . '/uploads/about';
+            if (is_dir($uploadDir)) {
+                foreach (glob($uploadDir . '/*') as $f) unlink($f);
+            }
+            saveSetting('about_photo', '');
+        }
     }
 
     if ($section === 'services') {
@@ -129,8 +149,23 @@ $watermark = $content['watermark'] ?? 'ik';
 <!-- About Section Editor -->
 <section class="dash-panel" id="about">
     <div class="dash-panel__header"><h2>About Section</h2></div>
-    <form method="POST" class="form-stack">
+    <form method="POST" enctype="multipart/form-data" class="form-stack">
         <input type="hidden" name="section" value="about">
+
+        <!-- About Photo -->
+        <div class="form-group">
+            <label>Photo</label>
+            <?php if (!empty($about['photo'])): ?>
+            <div style="display:flex; align-items:center; gap:1rem; margin-bottom:0.75rem;">
+                <img src="<?= e($about['photo']) ?>" alt="About photo" style="width:80px; height:100px; object-fit:cover; border-radius:6px;">
+                <label style="font-size:0.8rem; color:#666; display:flex; align-items:center; gap:0.4rem; text-transform:none; letter-spacing:0;">
+                    <input type="checkbox" name="remove_photo" value="1"> Remove photo
+                </label>
+            </div>
+            <?php endif; ?>
+            <input type="file" name="about_photo" accept="image/*">
+        </div>
+
         <div class="form-row">
             <div class="form-group">
                 <label>Kicker</label>
