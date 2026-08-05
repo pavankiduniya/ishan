@@ -393,9 +393,7 @@ button, input, select, textarea { font-family: inherit; }
 .photo-admin-actions {
     position: absolute; top: 6px; right: 6px;
     display: flex; gap: 4px; align-items: center;
-    opacity: 0; transition: opacity 0.2s ease;
 }
-.photo-admin-img:hover .photo-admin-actions { opacity: 1; }
 .photo-admin-cat {
     margin: 0.4rem 0 0; font-size: 0.72rem; color: #888;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
