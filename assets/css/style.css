@@ -103,10 +103,10 @@ a { color: inherit; }
 .hero-split {
     position: relative;
     display: block;
-    padding: 8rem 3rem 4rem;
+    padding: 6rem 3rem 3rem;
     max-width: 1600px; margin: 0 auto;
 }
-.hero-text { max-width: 480px; position: relative; z-index: 2; min-height: 420px; display: flex; flex-direction: column; justify-content: center; }
+.hero-text { max-width: 380px; position: relative; z-index: 2; }
 .hero .kicker {
     font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;
     color: #888; margin: 0 0 1.5rem;
@@ -116,7 +116,7 @@ a { color: inherit; }
     font-size: clamp(2.5rem, 5vw, 4rem);
     line-height: 1.1; letter-spacing: 1px; margin: 0 0 1.5rem; color: #111;
 }
-.hero .sub { max-width: 400px; color: #555; line-height: 1.7; margin: 0 0 2.5rem; }
+.hero .sub { max-width: 400px; color: #555; line-height: 1.7; margin: 0 0 2rem; }
 .hero .cta {
     color: #111; text-decoration: none; font-size: 0.85rem;
     letter-spacing: 2px; text-transform: uppercase;
@@ -125,13 +125,13 @@ a { color: inherit; }
 
 /* Hero Photos Marquee */
 .hero-photos {
-    position: absolute; top: 0; left: 35%; right: 0; bottom: 0;
+    position: absolute; top: 0; left: 30%; right: 0; bottom: 0;
     overflow: hidden; display: flex; align-items: center;
 }
 .hero-photos::before {
     content: ''; position: absolute; top: 0; left: 0; bottom: 0;
-    width: 180px; z-index: 1;
-    background: linear-gradient(to right, #fff 20%, rgba(255,255,255,0) 100%);
+    width: 200px; z-index: 1;
+    background: linear-gradient(to right, #fff 30%, rgba(255,255,255,0) 100%);
     pointer-events: none;
 }
 .hero-marquee { width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; }
@@ -140,7 +140,7 @@ a { color: inherit; }
     will-change: transform;
 }
 .hero-marquee__item {
-    flex-shrink: 0; width: 280px; height: 420px; overflow: hidden;
+    flex-shrink: 0; width: 260px; overflow: hidden;
 }
 .hero-marquee__item img {
     width: 100%; height: 100%; object-fit: cover; display: block;
@@ -162,15 +162,15 @@ a { color: inherit; }
     }
     .hero-text { max-width: 100%; }
     .hero-photos {
-        position: relative; width: 100%; height: 300px;
+        position: relative; left: 0; width: 100%; height: 280px;
         margin: 2rem -1.5rem 0; width: calc(100% + 3rem);
-        -webkit-mask-image: none; mask-image: none;
     }
-    .hero-marquee__item { width: 200px; height: 300px; }
+    .hero-photos::before { width: 80px; }
+    .hero-marquee__item { width: 180px; }
 }
 @media (max-width: 560px) {
-    .hero-marquee__item { width: 160px; height: 240px; }
-    .hero-photos { height: 240px; }
+    .hero-marquee__item { width: 140px; }
+    .hero-photos { height: 220px; }
 }
 footer {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
