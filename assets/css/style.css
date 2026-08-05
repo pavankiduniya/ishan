@@ -310,12 +310,12 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     color: #888; margin: 0 0 0.5rem;
 }
 .sidebar .total {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.05rem; color: #111; margin: 0 0 2rem;
+    font-size: 1.05rem; color: #111; margin: 0 0 2rem; font-weight: 600;
+}
 }
 .category-nav { display: flex; flex-direction: column; gap: 1.5rem; }
 .category-link {
-    display: block; font-family: Georgia, 'Times New Roman', serif;
+    display: block;
     color: #111; text-decoration: none; font-size: 1rem; margin-bottom: 0.6rem;
 }
 .category-link span, .category-nav li span { color: #aaa; font-size: 0.8rem; }
@@ -387,8 +387,9 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 /* Blog archive sidebar */
 .archive-nav { display: flex; flex-direction: column; gap: 1.5rem; }
 .year-link {
-    display: block; font-family: Georgia, 'Times New Roman', serif;
+    display: block;
     font-size: 1.05rem; color: #111; text-decoration: none; margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 .year-link span, .archive-nav li span { color: #aaa; font-size: 0.8rem; }
 .archive-nav ul {

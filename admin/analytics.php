@@ -208,6 +208,11 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
 
         var maxVal = Math.max(1, Math.max.apply(null, data.map(function(d) { return Math.max(d.views, d.unique); })));
 
+        // Store points for hover detection
+        canvas._chartPoints = [];
+        canvas._chartData = data;
+        canvas._chartDims = { padTop: padTop, padBottom: padBottom, padLeft: padLeft, padRight: padRight, chartW: chartW, chartH: chartH, maxVal: maxVal, w: w, h: h };
+
         // Grid
         ctx.strokeStyle = '#f0f0f0'; ctx.lineWidth = 1;
         for (var i = 0; i <= 4; i++) {
@@ -224,15 +229,20 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
             var x = padLeft + (data.length > 1 ? (chartW / (data.length - 1)) * i : chartW / 2);
             ctx.fillText(data[i].day.slice(5), x, h - 8);
         }
-        // Always show last label
         if (data.length > 1) {
             var lastX = padLeft + chartW;
             ctx.fillText(data[data.length - 1].day.slice(5), lastX, h - 8);
         }
 
+        // Store x positions for hover
+        var xPositions = [];
+        for (var i = 0; i < data.length; i++) {
+            xPositions.push(padLeft + (data.length > 1 ? (chartW / (data.length - 1)) * i : chartW / 2));
+        }
+        canvas._xPositions = xPositions;
+
         function drawLine(key, color, fillColor) {
             if (data.length < 2) {
-                // Single point — draw a dot
                 var px = padLeft + chartW / 2;
                 var py = padTop + chartH - (data[0][key] / maxVal) * chartH;
                 ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2);
@@ -242,12 +252,12 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
 
             var points = [];
             for (var i = 0; i < data.length; i++) {
-                var x = padLeft + (chartW / (data.length - 1)) * i;
+                var x = xPositions[i];
                 var y = padTop + chartH - (data[i][key] / maxVal) * chartH;
                 points.push({ x: x, y: y });
             }
 
-            // Smooth curve (bezier)
+            // Smooth curve
             ctx.beginPath();
             ctx.moveTo(points[0].x, padTop + chartH);
             ctx.lineTo(points[0].x, points[0].y);
@@ -281,6 +291,40 @@ $totalRecentVisits = (int)$db->query("SELECT COUNT(*) FROM visits")->fetchColumn
         drawLine('views', '#4a90d9', 'rgba(74, 144, 217, 0.1)');
         drawLine('unique', '#43b794', 'rgba(67, 183, 148, 0.1)');
     }
+
+    // Tooltip on hover
+    var tooltip = document.createElement('div');
+    tooltip.style.cssText = 'position:absolute;background:#111;color:#fff;padding:6px 10px;border-radius:6px;font-size:11px;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:100;white-space:nowrap;';
+    canvas.parentElement.style.position = 'relative';
+    canvas.parentElement.appendChild(tooltip);
+
+    canvas.addEventListener('mousemove', function(e) {
+        var rect = canvas.getBoundingClientRect();
+        var mx = e.clientX - rect.left;
+        var xPos = canvas._xPositions;
+        var data = canvas._chartData;
+        if (!xPos || !data || data.length === 0) { tooltip.style.opacity = '0'; return; }
+
+        // Find closest point
+        var closest = 0, minDist = Infinity;
+        for (var i = 0; i < xPos.length; i++) {
+            var dist = Math.abs(mx - xPos[i]);
+            if (dist < minDist) { minDist = dist; closest = i; }
+        }
+
+        if (minDist > 30) { tooltip.style.opacity = '0'; return; }
+
+        var d = data[closest];
+        tooltip.innerHTML = '<strong>' + d.day + '</strong><br>Views: ' + d.views + '<br>Unique: ' + d.unique;
+        tooltip.style.left = xPos[closest] + 'px';
+        tooltip.style.top = '10px';
+        tooltip.style.transform = 'translateX(-50%)';
+        tooltip.style.opacity = '1';
+    });
+
+    canvas.addEventListener('mouseleave', function() {
+        tooltip.style.opacity = '0';
+    });
 
     function updateStats(data) {
         var el;

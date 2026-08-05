@@ -425,3 +425,14 @@ button, input, select, textarea { font-family: inherit; }
 .icon-btn--danger { color: #c00; border-color: #fdd; }
 .icon-btn--danger:hover { color: #fff; background: #c00; border-color: #c00; }
 .actions { display: flex; gap: 6px; align-items: center; }
+
+/* ===== CHART HOVER ===== */
+.dash-chart__col { cursor: pointer; position: relative; }
+.dash-chart__col:hover .dash-chart__bar--blue { opacity: 0.8; }
+.dash-chart__col:hover .dash-chart__bar--green { opacity: 0.8; }
+.dash-chart__col:hover::after {
+    content: attr(title);
+    position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+    background: #111; color: #fff; padding: 4px 8px; border-radius: 4px;
+    font-size: 10px; white-space: nowrap; pointer-events: none; z-index: 10;
+}

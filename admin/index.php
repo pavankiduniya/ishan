@@ -103,10 +103,10 @@ $recentVisits = $db->query("
         </div>
         <div class="dash-chart">
             <?php foreach ($chartData as $day => $d): ?>
-            <div class="dash-chart__col">
+            <div class="dash-chart__col" title="<?= date('M j', strtotime($day)) ?>: <?= $d['views'] ?> views, <?= $d['unique'] ?> unique">
                 <div class="dash-chart__bars">
-                    <div class="dash-chart__bar dash-chart__bar--blue" style="height: <?= round(($d['views'] / $maxChart) * 100) ?>%" title="<?= $d['views'] ?> views"></div>
-                    <div class="dash-chart__bar dash-chart__bar--green" style="height: <?= $d['unique'] ? round(($d['unique'] / $maxChart) * 100) : 0 ?>%" title="<?= $d['unique'] ?> unique"></div>
+                    <div class="dash-chart__bar dash-chart__bar--blue" style="height: <?= round(($d['views'] / $maxChart) * 100) ?>%"></div>
+                    <div class="dash-chart__bar dash-chart__bar--green" style="height: <?= $d['unique'] ? round(($d['unique'] / $maxChart) * 100) : 0 ?>%"></div>
                 </div>
                 <span class="dash-chart__label"><?= date('d', strtotime($day)) ?></span>
             </div>
