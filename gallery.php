@@ -21,6 +21,13 @@ if ($activeCatSlug) {
     }
 }
 
+// If no category selected, default to first parent category
+if (!$activeCat && !empty($parentCats)) {
+    $first = reset($parentCats);
+    $activeCat = $first;
+    $activeCatSlug = $first['slug'];
+}
+
 // Fetch photos based on filter
 if ($activeCat) {
     // If it's a parent category, get all photos in it + its subcategories
@@ -40,8 +47,7 @@ if ($activeCat) {
     $photos = $stmt->fetchAll();
     $pageTitle = $activeCat['name'] . ' — Gallery';
 } else {
-    // All photos
-    $photos = $db->query('SELECT * FROM photos ORDER BY sort_order, uploaded_at DESC')->fetchAll();
+    $photos = [];
 }
 
 $totalPhotos = (int)$db->query('SELECT COUNT(*) FROM photos')->fetchColumn();
@@ -59,9 +65,6 @@ foreach ($rows as $r) $photoCounts[$r['category_id']] = (int)$r['cnt'];
         <p class="total"><?= $totalPhotos ?> photos</p>
 
         <nav class="category-nav">
-            <a href="<?= BASE_URL ?>/gallery" class="category-link <?= !$activeCatSlug ? 'active' : '' ?>">
-                All <span>(<?= $totalPhotos ?>)</span>
-            </a>
             <?php foreach ($parentCats as $p):
                 $parentCount = $photoCounts[$p['id']] ?? 0;
                 $children = array_filter($allCats, function($c) use ($p) { return (int)$c['parent_id'] === (int)$p['id']; });
