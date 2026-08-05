@@ -281,59 +281,50 @@ function getSiteContent(): array {
 }
 
 /**
- * Parse markdown blog posts from the content/blog directory.
+ * Get all blog posts from database.
  */
 function getBlogPosts(): array {
-    if (!is_dir(BLOG_DIR)) return [];
-
-    $posts = [];
-    foreach (glob(BLOG_DIR . '/*.md') as $file) {
-        $post = parseBlogPost($file);
-        if ($post) $posts[] = $post;
+    try {
+        $db = getDB();
+        $rows = $db->query('SELECT * FROM blog_posts ORDER BY published_at DESC, id DESC')->fetchAll();
+        return array_map(function($r) {
+            return [
+                'id' => (int)$r['id'],
+                'slug' => $r['slug'],
+                'title' => $r['title'],
+                'description' => $r['description'] ?? '',
+                'pubDate' => $r['published_at'],
+                'coverImage' => $r['cover_image'] ?? null,
+                'body' => $r['body'],
+            ];
+        }, $rows);
+    } catch (Exception $e) {
+        return [];
     }
-
-    // Sort by date descending
-    usort($posts, function ($a, $b) {
-        return strtotime($b['pubDate']) - strtotime($a['pubDate']);
-    });
-
-    return $posts;
 }
 
 /**
- * Parse a single markdown blog post file.
+ * Get a single blog post by slug.
  */
-function parseBlogPost(string $file): ?array {
-    $content = file_get_contents($file);
-    if (!preg_match('/^---\s*\n(.*?)\n---\s*\n(.*)/s', $content, $matches)) {
+function getBlogPostBySlug(string $slug): ?array {
+    try {
+        $db = getDB();
+        $stmt = $db->prepare('SELECT * FROM blog_posts WHERE slug = ? LIMIT 1');
+        $stmt->execute([$slug]);
+        $r = $stmt->fetch();
+        if (!$r) return null;
+        return [
+            'id' => (int)$r['id'],
+            'slug' => $r['slug'],
+            'title' => $r['title'],
+            'description' => $r['description'] ?? '',
+            'pubDate' => $r['published_at'],
+            'coverImage' => $r['cover_image'] ?? null,
+            'body' => $r['body'],
+        ];
+    } catch (Exception $e) {
         return null;
     }
-
-    $frontmatter = $matches[1];
-    $body = trim($matches[2]);
-    $slug = pathinfo($file, PATHINFO_FILENAME);
-
-    $data = [];
-    foreach (explode("\n", $frontmatter) as $line) {
-        $pos = strpos($line, ':');
-        if ($pos === false) continue;
-        $key = trim(substr($line, 0, $pos));
-        $value = trim(substr($line, $pos + 1));
-        // Remove surrounding quotes
-        if (preg_match('/^"(.*)"$/', $value, $m)) {
-            $value = str_replace('\\"', '"', $m[1]);
-        }
-        $data[$key] = $value;
-    }
-
-    return [
-        'slug' => $slug,
-        'title' => $data['title'] ?? 'Untitled',
-        'description' => $data['description'] ?? '',
-        'pubDate' => $data['pubDate'] ?? date('Y-m-d'),
-        'coverImage' => $data['coverImage'] ?? null,
-        'body' => $body,
-    ];
 }
 
 /**

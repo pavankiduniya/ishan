@@ -1,23 +1,24 @@
 <?php
 /**
- * Admin — Create/Edit Blog Post
+ * Admin — Create/Edit Blog Post (DB-backed)
  */
-$adminTitle = 'Edit Post';
+$adminTitle = 'New Post';
 $adminActive = 'blog';
 
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/auth.php';
 
-$slug = $_GET['slug'] ?? '';
+$db = getDB();
+
+$postId = (int)($_GET['id'] ?? 0);
 $post = null;
 
-if ($slug) {
-    $file = BLOG_DIR . '/' . basename($slug) . '.md';
-    if (file_exists($file)) {
-        $post = parseBlogPost($file);
-    }
-    $adminTitle = $post ? 'Edit: ' . $post['title'] : 'New Post';
+if ($postId) {
+    $stmt = $db->prepare('SELECT * FROM blog_posts WHERE id = ? LIMIT 1');
+    $stmt->execute([$postId]);
+    $post = $stmt->fetch();
+    if ($post) $adminTitle = 'Edit: ' . $post['title'];
 }
 
 // Handle form submission
@@ -33,35 +34,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Generate slug for new posts
-    $saveSlug = $slug ?: slugify($title);
-    if (!$saveSlug) $saveSlug = 'post-' . time();
+    if ($postId && $post) {
+        // Update existing
+        $stmt = $db->prepare('UPDATE blog_posts SET title = ?, description = ?, body = ?, cover_image = ?, published_at = ? WHERE id = ?');
+        $stmt->execute([$title, $description ?: null, $body, $coverImage ?: null, $pubDate, $postId]);
+    } else {
+        // Create new
+        $slug = slugify($title) ?: 'post-' . time();
 
-    // Ensure unique slug for new posts
-    if (!$slug) {
+        // Ensure unique slug
         $n = 2;
-        $base = $saveSlug;
-        while (file_exists(BLOG_DIR . '/' . $saveSlug . '.md')) {
-            $saveSlug = $base . '-' . $n;
+        $baseSlug = $slug;
+        while (true) {
+            $check = $db->prepare('SELECT id FROM blog_posts WHERE slug = ?');
+            $check->execute([$slug]);
+            if (!$check->fetch()) break;
+            $slug = $baseSlug . '-' . $n;
             $n++;
         }
+
+        $stmt = $db->prepare('INSERT INTO blog_posts (slug, title, description, body, cover_image, published_at) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt->execute([$slug, $title, $description ?: null, $body, $coverImage ?: null, $pubDate]);
     }
 
-    // Build frontmatter
-    $lines = ['---'];
-    $lines[] = 'title: "' . str_replace('"', '\\"', $title) . '"';
-    if ($description) $lines[] = 'description: "' . str_replace('"', '\\"', $description) . '"';
-    $lines[] = 'pubDate: ' . $pubDate;
-    if ($coverImage) $lines[] = 'coverImage: "' . str_replace('"', '\\"', $coverImage) . '"';
-    $lines[] = '---';
-    $lines[] = '';
-    $lines[] = trim($body);
-    $lines[] = '';
-
-    if (!is_dir(BLOG_DIR)) mkdir(BLOG_DIR, 0755, true);
-    file_put_contents(BLOG_DIR . '/' . $saveSlug . '.md', implode("\n", $lines));
-
-    header('Location: ' . BASE_URL . '/admin/blog?notice=Post saved.');
+    header('Location: ' . BASE_URL . '/admin/blog.php?notice=Post saved.');
     exit;
 }
 
@@ -82,11 +78,11 @@ require_once __DIR__ . '/layout_head.php';
     <div class="form-row">
         <div class="form-group">
             <label for="pubDate">Date</label>
-            <input type="date" id="pubDate" name="pubDate" value="<?= e($post['pubDate'] ?? date('Y-m-d')) ?>">
+            <input type="date" id="pubDate" name="pubDate" value="<?= e($post['published_at'] ?? date('Y-m-d')) ?>">
         </div>
         <div class="form-group">
             <label for="coverImage">Cover Image URL (optional)</label>
-            <input type="text" id="coverImage" name="coverImage" value="<?= e($post['coverImage'] ?? '') ?>" placeholder="/photos-gallery/...">
+            <input type="text" id="coverImage" name="coverImage" value="<?= e($post['cover_image'] ?? '') ?>" placeholder="/uploads/...">
         </div>
     </div>
 

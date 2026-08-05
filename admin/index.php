@@ -244,7 +244,7 @@ $topPages = $db->query('SELECT path, COUNT(*) as views, COUNT(DISTINCT visitor_i
                 <td><strong><?= e($post['title']) ?></strong></td>
                 <td><?= e($post['pubDate']) ?></td>
                 <td><?= e(substr($post['description'] ?? '', 0, 50)) ?></td>
-                <td><a href="<?= BASE_URL ?>/admin/blog-edit?slug=<?= urlencode($post['slug']) ?>" class="action">Edit</a></td>
+                <td><a href="<?= BASE_URL ?>/admin/blog-edit?id=<?= $post['id'] ?>" class="action">Edit</a></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

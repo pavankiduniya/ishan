@@ -80,6 +80,21 @@ CREATE TABLE IF NOT EXISTS photos (
     INDEX idx_category (category_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ─── Blog Posts ────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS blog_posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(200) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT DEFAULT NULL,
+    body TEXT NOT NULL,
+    cover_image VARCHAR(500) DEFAULT NULL,
+    published_at DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_published (published_at),
+    INDEX idx_slug (slug)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ─── Hero Photos (selected photos for homepage marquee) ───────────────
 CREATE TABLE IF NOT EXISTS hero_photos (
     id INT AUTO_INCREMENT PRIMARY KEY,

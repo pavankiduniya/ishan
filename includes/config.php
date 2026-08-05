@@ -62,9 +62,6 @@ define('PHOTOS_OPTIMIZED_URL', '/photos-optimized');
 define('PHOTOS_GALLERY_URL', '/photos-gallery');
 define('PHOTOS_THUMB_URL', '/photos-thumb');
 
-// Blog content directory (will move to DB later)
-define('BLOG_DIR', SITE_ROOT . '/content/blog');
-
 // Image extensions
 define('IMAGE_EXTENSIONS', ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif']);
 

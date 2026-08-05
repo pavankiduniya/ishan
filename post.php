@@ -10,14 +10,7 @@ if (!$slug) {
     exit;
 }
 
-$posts = getBlogPosts();
-$post = null;
-foreach ($posts as $p) {
-    if ($p['slug'] === $slug) {
-        $post = $p;
-        break;
-    }
-}
+$post = getBlogPostBySlug($slug);
 
 if (!$post) {
     http_response_code(404);
