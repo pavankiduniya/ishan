@@ -12,11 +12,12 @@ $hasPhotos = $totalPhotosNav > 0;
 $navCategories = [];
 if ($hasPhotos) {
     $allCats = $db->query('SELECT id, name, slug, parent_id FROM categories ORDER BY sort_order, name')->fetchAll();
-    $parentCats = array_filter($allCats, function($c) { return $c['parent_id'] === null; });
+    $parentCats = array_values(array_filter($allCats, function($c) { return !$c['parent_id']; }));
     foreach ($parentCats as &$p) {
         $p['children'] = array_filter($allCats, function($c) use ($p) { return (int)$c['parent_id'] === (int)$p['id']; });
     }
     $navCategories = $parentCats;
+    unset($allCats, $parentCats);
 }
 
 $blogPosts = getBlogPosts();
