@@ -52,6 +52,10 @@ $adminActive = $adminActive ?? 'dashboard';
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="15" height="15"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm2 12 4.5-5.5 3 3.5 2.5-3L19 17" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span>Hero Photos</span>
             </a>
+            <a href="<?= BASE_URL ?>/admin/settings" class="<?= $adminActive === 'settings' ? 'active' : '' ?>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Settings</span>
+            </a>
         </nav>
 
         <a href="<?= BASE_URL ?>/admin/logout" class="logout">
