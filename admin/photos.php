@@ -109,6 +109,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         exit;
     }
 
+    // Move photo to another category
+    if ($_POST['action'] === 'move_photo') {
+        $photoId = (int)($_POST['photo_id'] ?? 0);
+        $newCategoryId = (int)($_POST['new_category_id'] ?? 0);
+        if ($photoId && $newCategoryId) {
+            // Get current photo info
+            $stmt = $db->prepare('SELECT file_path, filename FROM photos WHERE id = ?');
+            $stmt->execute([$photoId]);
+            $photo = $stmt->fetch();
+
+            // Get new category slug
+            $stmt = $db->prepare('SELECT slug FROM categories WHERE id = ?');
+            $stmt->execute([$newCategoryId]);
+            $newCat = $stmt->fetch();
+
+            if ($photo && $newCat) {
+                // Move file on disk
+                $oldPath = SITE_ROOT . $photo['file_path'];
+                $newDir = SITE_ROOT . '/uploads/' . $newCat['slug'];
+                if (!is_dir($newDir)) mkdir($newDir, 0755, true);
+                $newPath = $newDir . '/' . $photo['filename'];
+                $newUrlPath = '/uploads/' . $newCat['slug'] . '/' . $photo['filename'];
+
+                if (file_exists($oldPath)) {
+                    rename($oldPath, $newPath);
+                }
+
+                // Update DB
+                $stmt = $db->prepare('UPDATE photos SET category_id = ?, file_path = ? WHERE id = ?');
+                $stmt->execute([$newCategoryId, $newUrlPath, $photoId]);
+
+                header('Location: ' . BASE_URL . '/admin/photos.php?notice=Photo moved.');
+                exit;
+            }
+        }
+        header('Location: ' . BASE_URL . '/admin/photos.php?error=Could not move photo.');
+        exit;
+    }
+
     // Delete photo
     if ($_POST['action'] === 'delete_photo') {
         $photoId = (int)($_POST['photo_id'] ?? 0);
@@ -271,17 +310,31 @@ if (!empty($recentPhotos)):
             <img src="<?= e($photo['file_path']) ?>" alt="<?= e($photo['original_name']) ?>" loading="lazy">
             <div class="photo-admin-meta">
                 <span class="tag"><?= e($photo['category_name']) ?></span>
-                <form method="POST" onsubmit="return confirm('Delete this photo?')">
-                    <input type="hidden" name="action" value="delete_photo">
-                    <input type="hidden" name="photo_id" value="<?= $photo['id'] ?>">
-                    <button type="submit" class="action danger" style="background:none;border:none;cursor:pointer;font-size:0.7rem;">✕</button>
-                </form>
+                <div style="display:flex;gap:4px;">
+                    <button type="button" class="icon-btn" title="Move to another category" onclick="movePhoto(<?= $photo['id'] ?>, '<?= e(addslashes($photo['original_name'])) ?>')" style="width:20px;height:20px;background:rgba(255,255,255,0.9);border:none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <form method="POST" onsubmit="return confirm('Delete this photo?')">
+                        <input type="hidden" name="action" value="delete_photo">
+                        <input type="hidden" name="photo_id" value="<?= $photo['id'] ?>">
+                        <button type="submit" class="icon-btn icon-btn--danger" title="Delete" style="width:20px;height:20px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
         <?php endforeach; ?>
     </div>
 </section>
 <?php endif; ?>
+
+<!-- Move Photo Form (hidden, used by JS) -->
+<form id="move-form" method="POST" style="display:none">
+    <input type="hidden" name="action" value="move_photo">
+    <input type="hidden" name="photo_id" id="move-photo-id">
+    <input type="hidden" name="new_category_id" id="move-category-id">
+</form>
 
 <!-- Rename Form (hidden, used by JS) -->
 <form id="rename-form" method="POST" style="display:none">
@@ -290,7 +343,36 @@ if (!empty($recentPhotos)):
     <input type="hidden" name="new_name" id="rename-name">
 </form>
 
+<!-- Move Photo Dialog -->
+<div id="move-dialog" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; padding:2rem; max-width:360px; width:90%;">
+        <h3 style="margin:0 0 0.5rem; font-size:1rem;">Move Photo</h3>
+        <p id="move-photo-name" style="color:#666; font-size:0.85rem; margin:0 0 1.25rem;"></p>
+        <select id="move-select" style="width:100%; padding:0.7rem; border:1px solid #ddd; border-radius:6px; font-size:0.9rem; margin-bottom:1rem;">
+            <?php foreach ($allCategories as $c): ?>
+            <option value="<?= $c['id'] ?>"><?= $c['parent_id'] ? '↳ ' : '' ?><?= e($c['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <div style="display:flex; gap:0.75rem;">
+            <button onclick="submitMove()" class="btn btn-primary" style="flex:1;">Move</button>
+            <button onclick="closeMoveDialog()" class="btn btn-secondary" style="flex:1;">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <script>
+function movePhoto(id, name) {
+    document.getElementById('move-photo-id').value = id;
+    document.getElementById('move-photo-name').textContent = name;
+    document.getElementById('move-dialog').style.display = 'flex';
+}
+function closeMoveDialog() {
+    document.getElementById('move-dialog').style.display = 'none';
+}
+function submitMove() {
+    document.getElementById('move-category-id').value = document.getElementById('move-select').value;
+    document.getElementById('move-form').submit();
+}
 function renameCategory(id, currentName) {
     var newName = prompt('Rename category:', currentName);
     if (newName && newName.trim() && newName.trim() !== currentName) {
