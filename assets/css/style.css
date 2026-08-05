@@ -338,14 +338,14 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     color: #888; margin: 0 0 0.75rem;
 }
 .gallery-page h1 {
-    font-family: Georgia, 'Times New Roman', serif;
     font-size: 2.6rem; letter-spacing: 2px; margin: 0 0 0.75rem; color: #111;
+    font-weight: 700; text-transform: capitalize;
 }
 .gallery-page .sub { color: #555; margin: 0; }
 .category { margin-bottom: 4.5rem; scroll-margin-top: 96px; }
 .category h2 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.6rem; color: #111; margin: 0 0 1.5rem;
+    font-size: 1.6rem; color: #111; margin: 0 0 1.5rem; font-weight: 600;
+    text-transform: capitalize;
     padding-bottom: 1rem; border-bottom: 1px solid #eee;
 }
 .subcategory { margin: 2.5rem 0; scroll-margin-top: 96px; }
@@ -395,8 +395,8 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 .blog-layout .content { min-width: 0; }
 .blog-layout .heading { margin-bottom: 4rem; }
 .blog-layout .heading h1 {
-    font-family: Georgia, 'Times New Roman', serif;
     font-size: 2.6rem; letter-spacing: 2px; margin: 0 0 0.75rem; color: #111;
+    font-weight: 700; text-transform: capitalize;
 }
 .blog-layout .heading .kicker {
     font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;
@@ -433,8 +433,8 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     color: #999; margin: 0 0 0.5rem;
 }
 .post-card .meta h4 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.3rem; margin: 0 0 0.5rem; color: #111;
+    font-size: 1.3rem; margin: 0 0 0.5rem; color: #111; font-weight: 600;
+    text-transform: capitalize;
 }
 .post-card .desc { color: #666; font-size: 0.9rem; line-height: 1.6; margin: 0 0 0.75rem; }
 .post-card .read {
@@ -473,15 +473,17 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     color: #999; margin: 0 0 0.75rem;
 }
 .blog-layout .post h1 {
-    font-family: Georgia, 'Times New Roman', serif;
     font-size: 2.2rem; letter-spacing: 1px; margin: 0 0 1rem; color: #111;
+    font-weight: 700; text-transform: capitalize;
+}
 }
 .blog-layout .post .deck { color: #555; line-height: 1.7; margin: 0; }
 .blog-layout .post article { line-height: 1.8; color: #222; font-size: 1.05rem; }
-.blog-layout .post article p { margin: 0 0 1.5rem; }
-.blog-layout .post article img { max-width: 20%; width: auto; height: auto; display: block; margin: 1rem 0; border-radius: 4px; }
+.blog-layout .post article p { margin: 0 0 1rem; }
+.blog-layout .post article p:empty { display: none; }
+.blog-layout .post article img { max-width: 20%; width: auto; height: auto; display: block; margin: 0.75rem 0; border-radius: 4px; }
 .blog-layout .post article h2 {
-    font-family: Georgia, 'Times New Roman', serif; margin: 2.5rem 0 1rem;
+    margin: 1.5rem 0 0.75rem; font-weight: 600; text-transform: capitalize;
 }
 
 /* ===== RIGHT RAIL ===== */
