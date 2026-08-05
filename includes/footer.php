@@ -50,6 +50,16 @@ if (!empty($stickyLinks)):
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 })();
+// Dynamic sticky for right rail
+(function() {
+    var rail = document.getElementById('right-rail');
+    if (!rail) return;
+    var nav = document.querySelector('header.nav');
+    var navH = nav ? nav.offsetHeight + 16 : 96;
+    rail.style.position = 'sticky';
+    rail.style.top = navH + 'px';
+    rail.style.alignSelf = 'start';
+})();
 </script>
 <?php if ($showSplash ?? false): ?>
 <script src="<?= BASE_URL ?>/assets/js/splash.js?v=<?= time() ?>"></script>
