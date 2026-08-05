@@ -205,7 +205,6 @@ footer .visits, .visit-counter {
     display: inline-flex; align-items: center; justify-content: center;
     width: 12px; height: 16px;
     background: #111; color: #fff;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
     font-size: 8px; font-weight: 500;
     border-radius: 2px;
 }
@@ -219,8 +218,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     color: #888; margin: 0 0 0.75rem;
 }
 .gallery .heading h2, .services .heading h2 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 2rem; margin: 0; color: #111;
+    font-size: 2rem; margin: 0; color: #111; font-weight: 700;
 }
 .grid { column-count: 4; column-gap: 1.5rem; }
 #gallery-grid figure {
@@ -264,8 +262,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     color: #888; margin: 0 0 0.75rem;
 }
 .about h2 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 2.1rem; margin: 0 0 1.25rem; color: #111;
+    font-size: 2.1rem; margin: 0 0 1.25rem; color: #111; font-weight: 700;
 }
 .about .copy p { color: #555; line-height: 1.8; margin: 0 0 1.1rem; max-width: 460px; }
 .about .signature-text {
@@ -282,8 +279,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     flex: 0 1 280px; max-width: 320px;
 }
 .services .card h3 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.15rem; margin: 0 0 0.75rem; color: #111;
+    font-size: 1.15rem; margin: 0 0 0.75rem; color: #111; font-weight: 600;
 }
 .services .card p { color: #666; font-size: 0.9rem; line-height: 1.6; margin: 0; }
 
@@ -294,8 +290,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     color: #888; margin: 0 0 0.75rem;
 }
 .contact h2 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 2.1rem; margin: 0 0 1rem; color: #111;
+    font-size: 2.1rem; margin: 0 0 1rem; color: #111; font-weight: 700;
 }
 .contact .sub { color: #555; margin: 0 0 1.5rem; }
 .contact .email {
@@ -404,8 +399,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 }
 .blog-layout .heading .sub { color: #555; margin: 0; }
 .year-heading {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.8rem; color: #111; margin: 3.5rem 0 1.5rem;
+    font-size: 1.8rem; color: #111; margin: 3.5rem 0 1.5rem; font-weight: 700;
     padding-top: 2rem; border-top: 1px solid #eee;
 }
 .year-section:first-of-type .year-heading { margin-top: 0; padding-top: 0; border-top: none; }
@@ -502,8 +496,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     display: block; margin-bottom: 1rem;
 }
 .right-rail .author h4 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 1.05rem; margin: 0 0 0.5rem; color: #111;
+    font-size: 1.05rem; margin: 0 0 0.5rem; color: #111; font-weight: 600;
 }
 .right-rail .author p { color: #666; font-size: 0.88rem; line-height: 1.6; margin: 0 0 0.75rem; }
 .right-rail .author a, .right-rail .widget a {
@@ -601,7 +594,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 
 /* ===== 404 ===== */
 .not-found { text-align: center; padding: 10rem 2rem; }
-.not-found h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 2rem; }
+.not-found h1 { font-size: 2rem; font-weight: 700; }
 .not-found a { color: #111; }
 
 /* ===== LOGIN LINK ===== */
