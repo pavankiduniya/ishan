@@ -125,9 +125,8 @@ a { color: inherit; }
 
 /* Hero Photos Marquee */
 .hero-photos {
-    position: relative; overflow: hidden; height: 100%;
+    position: relative; overflow: hidden;
     display: flex; align-items: center;
-    margin: -8rem -3rem -4rem 0;
 }
 .hero-marquee { width: 100%; overflow: hidden; }
 .hero-marquee__track {
@@ -135,7 +134,7 @@ a { color: inherit; }
     will-change: transform;
 }
 .hero-marquee__item {
-    flex-shrink: 0; width: 280px; height: 100vh; overflow: hidden;
+    flex-shrink: 0; width: 280px; height: 420px; overflow: hidden;
 }
 .hero-marquee__item img {
     width: 100%; height: 100%; object-fit: cover; display: block;
@@ -156,11 +155,11 @@ a { color: inherit; }
         grid-template-columns: 1fr; padding: 7rem 1.5rem 2rem;
         gap: 2rem; min-height: auto;
     }
-    .hero-photos { height: 50vh; margin: 0 -1.5rem; }
-    .hero-marquee__item { width: 200px; height: 50vh; }
+    .hero-photos { margin: 0 -1.5rem; }
+    .hero-marquee__item { width: 200px; height: 300px; }
 }
 @media (max-width: 560px) {
-    .hero-marquee__item { width: 160px; height: 40vh; }
+    .hero-marquee__item { width: 160px; height: 240px; }
 }
 footer {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;

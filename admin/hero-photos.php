@@ -4,7 +4,7 @@
  * Select which photos appear in the hero marquee.
  */
 $adminTitle = 'Hero Photos';
-$adminActive = 'site-content';
+$adminActive = 'hero-photos';
 
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/config.php';
