@@ -398,6 +398,7 @@ button, input, select, textarea { font-family: inherit; }
     background: rgba(255,255,255,0.2); color: #fff; font-size: 0.65rem;
 }
 .photo-admin-meta .action.danger { color: #ff6b6b; font-size: 0.85rem; }
+.photo-admin-meta > div { display: flex; gap: 4px; flex-shrink: 0; }
 
 /* ===== DISK USAGE BAR ===== */
 .disk-bar-wrap { padding: 0.5rem 0; }
