@@ -181,6 +181,9 @@ $watermark = $content['watermark'] ?? 'ik';
                     <label>Description</label>
                     <input type="text" name="item_desc[]" value="<?= e($item['desc']) ?>">
                 </div>
+                <button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest('.service-item').remove()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+                </button>
             </div>
             <?php endforeach; ?>
         </div>
@@ -196,7 +199,7 @@ function addServiceItem() {
     var list = document.getElementById('services-list');
     var row = document.createElement('div');
     row.className = 'form-row service-item';
-    row.innerHTML = '<div class="form-group"><label>Title</label><input type="text" name="item_title[]" value=""></div><div class="form-group"><label>Description</label><input type="text" name="item_desc[]" value=""></div>';
+    row.innerHTML = '<div class="form-group"><label>Title</label><input type="text" name="item_title[]" value=""></div><div class="form-group"><label>Description</label><input type="text" name="item_desc[]" value=""></div><button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest(\'.service-item\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>';
     list.appendChild(row);
 }
 </script>
