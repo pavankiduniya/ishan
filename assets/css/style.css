@@ -355,6 +355,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 .sidebar {
     position: sticky; top: 96px;
     max-height: calc(100vh - 96px - 72px); overflow-y: auto;
+    z-index: 1;
     padding-right: 0.5rem;
 }
 .sidebar .kicker {
@@ -487,6 +488,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
     overflow-y: auto;
     display: flex; flex-direction: column; gap: 2rem;
     align-self: flex-start;
+    z-index: 1;
 }
 .right-rail .widget { border-top: 1px solid #eee; padding-top: 1.5rem; }
 .right-rail .widget:first-child { border-top: none; padding-top: 0; }
