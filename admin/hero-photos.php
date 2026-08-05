@@ -45,18 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 }
 
 // Current hero photos
-$heroPhotos = [];
-try {
-    $heroPhotos = $db->query('
-        SELECT hp.id as hero_id, hp.sort_order, p.id as photo_id, p.file_path, p.original_name, c.name as category_name
-        FROM hero_photos hp
-        JOIN photos p ON hp.photo_id = p.id
-        JOIN categories c ON p.category_id = c.id
-        ORDER BY hp.sort_order, hp.id
-    ')->fetchAll();
-} catch (Exception $e) {
-    // Table might not exist yet
-}
+$heroPhotos = $db->query('
+    SELECT hp.id as hero_id, hp.sort_order, p.id as photo_id, p.file_path, p.original_name, c.name as category_name
+    FROM hero_photos hp
+    JOIN photos p ON hp.photo_id = p.id
+    JOIN categories c ON p.category_id = c.id
+    ORDER BY hp.sort_order, hp.id
+')->fetchAll();
 
 // All available photos (not already in hero)
 $heroPhotoIds = array_column($heroPhotos, 'photo_id');
@@ -74,19 +69,6 @@ require_once __DIR__ . '/layout_head.php';
 ?>
 
 <p style="color:#666; margin-bottom: 1.5rem;">Select photos to display in the homepage hero section marquee. They will scroll infinitely in the order shown below.</p>
-
-<?php
-// Auto-create table if it doesn't exist
-try {
-    $db->exec('CREATE TABLE IF NOT EXISTS hero_photos (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        photo_id INT NOT NULL,
-        sort_order INT DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (photo_id) REFERENCES photos(id) ON DELETE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
-} catch (Exception $e) {}
-?>
 
 <!-- Current Hero Photos -->
 <section class="dash-panel">
