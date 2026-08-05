@@ -60,7 +60,7 @@ require_once __DIR__ . '/layout_head.php';
 ?>
 
 <!-- Quill CSS -->
-<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<link href="<?= BASE_URL ?>/assets/vendor/quill.snow.css" rel="stylesheet">
 <style>
     #editor-container { height: 400px; background: #fff; border-radius: 0 0 6px 6px; }
     .ql-toolbar { border-radius: 6px 6px 0 0; }
@@ -103,7 +103,7 @@ require_once __DIR__ . '/layout_head.php';
 </form>
 
 <!-- Quill JS -->
-<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script src="<?= BASE_URL ?>/assets/vendor/quill.min.js"></script>
 <script>
 var quill = new Quill('#editor-container', {
     theme: 'snow',
