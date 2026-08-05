@@ -26,11 +26,14 @@ if (!empty($stickyLinks)):
 </footer>
 
 <!-- Lightbox -->
+<?php $lightboxWatermark = getSiteContent()['watermark'] ?? ''; ?>
 <div id="lightbox" class="lightbox" hidden>
     <button type="button" class="lightbox-close" aria-label="Close">&times;</button>
     <div class="lightbox-frame">
         <img id="lightbox-img" src="" alt="" draggable="false">
-        <span class="watermark">ik</span>
+        <?php if ($lightboxWatermark): ?>
+        <span class="watermark"><?= e($lightboxWatermark) ?></span>
+        <?php endif; ?>
     </div>
 </div>
 
