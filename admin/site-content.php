@@ -71,8 +71,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             for ($i = 0; $i < count($_POST['item_title']); $i++) {
                 $title = trim($_POST['item_title'][$i] ?? '');
                 $desc = trim($_POST['item_desc'][$i] ?? '');
+                $img = trim($_POST['item_img'][$i] ?? '');
+
+                // Handle image upload for this item
+                if (isset($_FILES['item_image']['name'][$i]) && $_FILES['item_image']['error'][$i] === UPLOAD_ERR_OK) {
+                    $ext = strtolower(pathinfo($_FILES['item_image']['name'][$i], PATHINFO_EXTENSION));
+                    if (in_array($ext, IMAGE_EXTENSIONS)) {
+                        $uploadDir = SITE_ROOT . '/uploads/services';
+                        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+                        $filename = 'service-' . $i . '-' . time() . '.' . $ext;
+                        move_uploaded_file($_FILES['item_image']['tmp_name'][$i], $uploadDir . '/' . $filename);
+                        $img = '/uploads/services/' . $filename;
+                    }
+                }
+
                 if ($title) {
-                    $items[] = ['title' => $title, 'desc' => $desc];
+                    $items[] = ['title' => $title, 'desc' => $desc, 'img' => $img];
                 }
             }
         }
@@ -210,7 +224,7 @@ $contact = $content['contact'];
 <!-- Services Section Editor -->
 <section class="dash-panel" id="services">
     <div class="dash-panel__header"><h2>Services Section</h2></div>
-    <form method="POST" class="form-stack">
+    <form method="POST" enctype="multipart/form-data" class="form-stack">
         <input type="hidden" name="section" value="services">
         <div class="form-row">
             <div class="form-group">
@@ -227,6 +241,14 @@ $contact = $content['contact'];
         <div id="services-list">
             <?php foreach ($services['items'] as $item): ?>
             <div class="form-row service-item">
+                <div class="form-group" style="flex:0 0 80px;">
+                    <label>Image</label>
+                    <?php if (!empty($item['img'])): ?>
+                    <img src="<?= e($item['img']) ?>" style="width:60px;height:60px;object-fit:cover;border-radius:6px;margin-bottom:4px;">
+                    <?php endif; ?>
+                    <input type="file" name="item_image[]" accept="image/*" style="font-size:0.7rem;width:80px;">
+                    <input type="hidden" name="item_img[]" value="<?= e($item['img'] ?? '') ?>">
+                </div>
                 <div class="form-group">
                     <label>Title</label>
                     <input type="text" name="item_title[]" value="<?= e($item['title']) ?>">
@@ -305,7 +327,7 @@ function addServiceItem() {
     var list = document.getElementById('services-list');
     var row = document.createElement('div');
     row.className = 'form-row service-item';
-    row.innerHTML = '<div class="form-group"><label>Title</label><input type="text" name="item_title[]" value=""></div><div class="form-group"><label>Description</label><input type="text" name="item_desc[]" value=""></div><button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest(\'.service-item\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>';
+    row.innerHTML = '<div class="form-group" style="flex:0 0 80px;"><label>Image</label><input type="file" name="item_image[]" accept="image/*" style="font-size:0.7rem;width:80px;"><input type="hidden" name="item_img[]" value=""></div><div class="form-group"><label>Title</label><input type="text" name="item_title[]" value=""></div><div class="form-group"><label>Description</label><input type="text" name="item_desc[]" value=""></div><button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest(\'.service-item\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>';
     list.appendChild(row);
 }
 function addContactLink() {

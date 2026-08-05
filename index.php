@@ -77,7 +77,12 @@ $heroPhotos = $db->query('
 
     <div class="services-grid">
         <?php foreach ($services['items'] as $s): ?>
-        <div class="card">
+        <div class="service-card">
+            <?php if (!empty($s['img'])): ?>
+            <div class="service-card__img">
+                <img src="<?= e($s['img']) ?>" alt="<?= e($s['title']) ?>">
+            </div>
+            <?php endif; ?>
             <h3><?= e($s['title']) ?></h3>
             <p><?= e($s['desc']) ?></p>
         </div>
