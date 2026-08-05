@@ -10,7 +10,7 @@ $db = getDB();
 
 // Get all categories
 $allCats = $db->query('SELECT id, name, slug, parent_id FROM categories ORDER BY sort_order, name')->fetchAll();
-$parentCats = array_filter($allCats, function($c) { return $c['parent_id'] === null; });
+$parentCats = array_values(array_filter($allCats, function($c) { return $c['parent_id'] === null || $c['parent_id'] === ''; }));
 
 // Check if filtering by category
 $activeCatSlug = $_GET['cat'] ?? '';
@@ -31,7 +31,7 @@ if (!$activeCat && !empty($parentCats)) {
 // Fetch photos based on filter
 if ($activeCat) {
     // If it's a parent category, get all photos in it + its subcategories
-    if ($activeCat['parent_id'] === null) {
+    if ($activeCat['parent_id'] === null || $activeCat['parent_id'] === '' || $activeCat['parent_id'] === '0') {
         $childIds = [$activeCat['id']];
         foreach ($allCats as $c) {
             if ((int)$c['parent_id'] === (int)$activeCat['id']) $childIds[] = $c['id'];
