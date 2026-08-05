@@ -483,31 +483,29 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 }
 
 /* ===== RIGHT RAIL ===== */
-.right-rail {
-    position: sticky; top: 96px;
-    display: flex; flex-direction: column; gap: 2rem;
-    align-self: start;
-    z-index: 1;
+.right-rail, .sidebar .widget {
+    border-top: 1px solid #eee; padding-top: 1.5rem;
 }
-.right-rail .widget { border-top: 1px solid #eee; padding-top: 1.5rem; }
-.right-rail .widget:first-child { border-top: none; padding-top: 0; }
-.right-rail .widget-title {
+.right-rail .widget, .sidebar .widget { border-top: 1px solid #eee; padding-top: 1.5rem; }
+.right-rail .widget:first-child, .sidebar .widget:first-child { border-top: none; padding-top: 0; }
+.right-rail .widget-title, .sidebar .widget-title {
     font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase;
     color: #999; margin: 0 0 0.75rem;
 }
-.right-rail .avatar {
+.right-rail .avatar, .sidebar .avatar {
     width: 56px; height: 56px; border-radius: 50%; background: #eee;
     display: block; margin-bottom: 1rem;
 }
-.right-rail .author h4 {
+.right-rail .author h4, .sidebar .author h4 {
     font-size: 1.05rem; margin: 0 0 0.5rem; color: #111; font-weight: 600;
 }
-.right-rail .author p { color: #666; font-size: 0.88rem; line-height: 1.6; margin: 0 0 0.75rem; }
-.right-rail .author a, .right-rail .widget a {
+.right-rail .author p, .sidebar .author p { color: #666; font-size: 0.88rem; line-height: 1.6; margin: 0 0 0.75rem; }
+.right-rail .author a, .right-rail .widget a, .sidebar .author a, .sidebar .widget a {
     color: #111; font-size: 0.85rem; text-decoration: none;
     border-bottom: 1px solid #111; padding-bottom: 2px;
 }
 .follow-links { display: flex; gap: 1.25rem; }
+.follow-links a { border-bottom: none !important; }
 
 /* ===== LIGHTBOX ===== */
 .lightbox {
