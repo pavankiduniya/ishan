@@ -264,8 +264,24 @@ $contact = $content['contact'];
             <?php foreach ($contact['links'] as $link): ?>
             <div class="form-row contact-link-item">
                 <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" name="link_name[]" value="<?= e($link['name']) ?>" placeholder="e.g. Instagram">
+                    <label>Platform</label>
+                    <select name="link_name[]">
+                        <option value="Instagram" <?= $link['name'] === 'Instagram' ? 'selected' : '' ?>>Instagram</option>
+                        <option value="WhatsApp" <?= $link['name'] === 'WhatsApp' ? 'selected' : '' ?>>WhatsApp</option>
+                        <option value="YouTube" <?= $link['name'] === 'YouTube' ? 'selected' : '' ?>>YouTube</option>
+                        <option value="Facebook" <?= $link['name'] === 'Facebook' ? 'selected' : '' ?>>Facebook</option>
+                        <option value="Twitter" <?= $link['name'] === 'Twitter' ? 'selected' : '' ?>>Twitter</option>
+                        <option value="X" <?= $link['name'] === 'X' ? 'selected' : '' ?>>X</option>
+                        <option value="LinkedIn" <?= $link['name'] === 'LinkedIn' ? 'selected' : '' ?>>LinkedIn</option>
+                        <option value="Pinterest" <?= $link['name'] === 'Pinterest' ? 'selected' : '' ?>>Pinterest</option>
+                        <option value="TikTok" <?= $link['name'] === 'TikTok' ? 'selected' : '' ?>>TikTok</option>
+                        <option value="Snapchat" <?= $link['name'] === 'Snapchat' ? 'selected' : '' ?>>Snapchat</option>
+                        <option value="Telegram" <?= $link['name'] === 'Telegram' ? 'selected' : '' ?>>Telegram</option>
+                        <option value="Behance" <?= $link['name'] === 'Behance' ? 'selected' : '' ?>>Behance</option>
+                        <option value="Dribbble" <?= $link['name'] === 'Dribbble' ? 'selected' : '' ?>>Dribbble</option>
+                        <option value="Website" <?= $link['name'] === 'Website' ? 'selected' : '' ?>>Website</option>
+                        <option value="Other" <?= !in_array($link['name'], ['Instagram','WhatsApp','YouTube','Facebook','Twitter','X','LinkedIn','Pinterest','TikTok','Snapchat','Telegram','Behance','Dribbble','Website']) ? 'selected' : '' ?>>Other</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>URL</label>
@@ -296,7 +312,7 @@ function addContactLink() {
     var list = document.getElementById('contact-links-list');
     var row = document.createElement('div');
     row.className = 'form-row contact-link-item';
-    row.innerHTML = '<div class="form-group"><label>Name</label><input type="text" name="link_name[]" value="" placeholder="e.g. WhatsApp"></div><div class="form-group"><label>URL</label><input type="url" name="link_url[]" value="" placeholder="https://..."></div><button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest(\'.contact-link-item\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>';
+    row.innerHTML = '<div class="form-group"><label>Platform</label><select name="link_name[]"><option value="Instagram">Instagram</option><option value="WhatsApp">WhatsApp</option><option value="YouTube">YouTube</option><option value="Facebook">Facebook</option><option value="Twitter">Twitter</option><option value="X">X</option><option value="LinkedIn">LinkedIn</option><option value="Pinterest">Pinterest</option><option value="TikTok">TikTok</option><option value="Snapchat">Snapchat</option><option value="Telegram">Telegram</option><option value="Behance">Behance</option><option value="Dribbble">Dribbble</option><option value="Website">Website</option><option value="Other">Other</option></select></div><div class="form-group"><label>URL</label><input type="url" name="link_url[]" value="" placeholder="https://..."></div><button type="button" class="icon-btn icon-btn--danger" title="Remove" onclick="this.closest(\'.contact-link-item\').remove()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>';
     list.appendChild(row);
 }
 </script>
