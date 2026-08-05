@@ -95,9 +95,10 @@ $heroPhotos = $db->query('
 
     <div class="social">
         <?php foreach ($contact['links'] as $link): ?>
-        <a href="<?= e($link['url']) ?>" target="_blank" rel="noopener noreferrer"><?= e($link['name']) ?></a>
+        <a href="<?= e($link['url']) ?>" target="_blank" rel="noopener noreferrer" title="<?= e($link['name']) ?>">
+            <?= getSocialIcon($link['name']) ?>
+        </a>
         <?php endforeach; ?>
-        <a href="<?= BASE_URL ?>/blog">Blog</a>
     </div>
 </section>
 
