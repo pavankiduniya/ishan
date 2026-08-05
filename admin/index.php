@@ -9,11 +9,10 @@ require_once __DIR__ . '/layout_head.php';
 $db = getDB();
 
 $posts = getBlogPosts();
-$categories = getAllCategoryTrees();
-$totalPhotos = 0;
-foreach ($categories as $c) {
-    $totalPhotos += $c['total'];
-}
+
+// Photo stats from DB
+$totalPhotos = (int)$db->query('SELECT COUNT(*) FROM photos')->fetchColumn();
+$dbCategories = $db->query('SELECT c.*, (SELECT COUNT(*) FROM photos WHERE category_id = c.id) as photo_count, (SELECT COUNT(*) FROM categories WHERE parent_id = c.id) as sub_count FROM categories c WHERE c.parent_id IS NULL ORDER BY c.name')->fetchAll();
 
 // Visit stats from MySQL
 $totalViews = (int)$db->query('SELECT COUNT(*) FROM visits')->fetchColumn();
@@ -77,7 +76,7 @@ $recentVisits = $db->query("
             <p class="dash-card__value"><?= $totalPhotos ?></p>
             <p class="dash-card__label">Total Photos</p>
         </div>
-        <p class="dash-card__sub"><?= count($categories) ?> categories</p>
+        <p class="dash-card__sub"><?= count($dbCategories) ?> categories</p>
     </div>
 
     <div class="dash-card dash-card--orange">
@@ -180,20 +179,24 @@ $recentVisits = $db->query("
             <h2>Photo Categories</h2>
             <a href="<?= BASE_URL ?>/admin/photos" class="dash-panel__link">Manage →</a>
         </div>
+        <?php if (empty($dbCategories)): ?>
+            <p class="empty">No categories yet. <a href="<?= BASE_URL ?>/admin/photos">Create one</a></p>
+        <?php else: ?>
         <table class="data-table">
             <thead>
                 <tr><th>Category</th><th>Subcategories</th><th>Photos</th></tr>
             </thead>
             <tbody>
-                <?php foreach ($categories as $c): ?>
+                <?php foreach ($dbCategories as $c): ?>
                 <tr>
-                    <td><strong><?= e($c['label']) ?></strong></td>
-                    <td><?= count($c['subcategories']) ?></td>
-                    <td><?= $c['total'] ?></td>
+                    <td><strong><?= e($c['name']) ?></strong></td>
+                    <td><?= $c['sub_count'] ?></td>
+                    <td><?= $c['photo_count'] ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <?php endif; ?>
     </section>
 </div>
 
