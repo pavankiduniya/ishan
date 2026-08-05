@@ -125,7 +125,7 @@ a { color: inherit; }
 
 /* Hero Photos Marquee */
 .hero-photos {
-    position: absolute; top: 0; left: 30%; right: 0; bottom: 0;
+    position: absolute; top: 4rem; left: 30%; right: 0; bottom: 0;
     overflow: hidden; display: flex; align-items: center;
 }
 .hero-photos::before {
