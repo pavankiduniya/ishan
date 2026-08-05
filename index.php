@@ -52,7 +52,6 @@ $heroPhotos = $db->query('
         </div>
         <?php endif; ?>
     </div>
-    <a class="scroll-cue" href="#about" aria-label="Scroll down">&darr;</a>
 </section>
 
 <!-- About Section -->

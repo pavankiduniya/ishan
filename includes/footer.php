@@ -30,7 +30,7 @@
     // Wait for images to load to get correct widths
     var images = track.querySelectorAll('img');
     var loaded = 0;
-    var gap = 12;
+    var gap = 0;
 
     function startScroll() {
         // Calculate width of the first half (original set)
