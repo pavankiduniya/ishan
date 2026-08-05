@@ -310,11 +310,11 @@ if (!empty($recentPhotos)):
             <img src="<?= e($photo['file_path']) ?>" alt="<?= e($photo['original_name']) ?>" loading="lazy">
             <div class="photo-admin-meta">
                 <span class="tag"><?= e($photo['category_name']) ?></span>
-                <div style="display:flex;gap:4px;">
+                <div style="display:flex;gap:4px;align-items:center;">
                     <button type="button" class="icon-btn" title="Move to another category" onclick="movePhoto(<?= $photo['id'] ?>, '<?= e(addslashes($photo['original_name'])) ?>')" style="width:20px;height:20px;background:rgba(255,255,255,0.9);border:none;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </button>
-                    <form method="POST" onsubmit="return confirm('Delete this photo?')">
+                    <form method="POST" onsubmit="return confirm('Delete this photo?')" style="display:flex;margin:0;">
                         <input type="hidden" name="action" value="delete_photo">
                         <input type="hidden" name="photo_id" value="<?= $photo['id'] ?>">
                         <button type="submit" class="icon-btn icon-btn--danger" title="Delete" style="width:20px;height:20px;">
