@@ -556,9 +556,9 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
         grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; gap: 2.5rem;
     }
     .sidebar { position: static; max-height: none; overflow-y: visible; }
+    .sidebar { position: static; }
     .category-nav { flex-direction: row; flex-wrap: wrap; gap: 1.5rem 2rem; }
     .archive-nav { flex-direction: row; flex-wrap: wrap; gap: 1.5rem 2rem; }
-    .right-rail { position: static; }
     .post-card { grid-template-columns: 1fr; gap: 1rem; }
     .post-card .thumb { width: 100%; }
 }
@@ -642,13 +642,14 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 .scroll-top[hidden] { display: none; }
 
 /* Right rail avatar image */
-.right-rail .avatar-img {
+.avatar-img {
     width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
     display: block; margin-bottom: 1rem;
 }
-.right-rail .follow-links a {
+.follow-links a {
     display: inline-flex; align-items: center; justify-content: center;
     width: 32px; height: 32px; border-radius: 50%; border: 1px solid #eee;
     transition: transform 0.2s ease;
+    border-bottom: none !important;
 }
-.right-rail .follow-links a:hover { transform: translateY(-2px); }
+.follow-links a:hover { transform: translateY(-2px); }
