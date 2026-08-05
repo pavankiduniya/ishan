@@ -102,11 +102,14 @@ a { color: inherit; }
 .hero { position: relative; overflow: hidden; }
 .hero-split {
     position: relative;
-    display: block;
-    padding: 6rem 3rem 3rem;
+    display: flex; align-items: stretch;
+    padding: 5.5rem 3rem 3rem;
     max-width: 1600px; margin: 0 auto;
 }
-.hero-text { max-width: 380px; position: relative; z-index: 2; }
+.hero-text {
+    max-width: 380px; position: relative; z-index: 2;
+    padding: 2rem 0;
+}
 .hero .kicker {
     font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;
     color: #888; margin: 0 0 1.5rem;
@@ -125,8 +128,8 @@ a { color: inherit; }
 
 /* Hero Photos Marquee */
 .hero-photos {
-    position: absolute; top: 4rem; left: 30%; right: 0; bottom: 0;
-    overflow: hidden; display: flex; align-items: center;
+    position: absolute; top: 5.5rem; left: 30%; right: 0; bottom: 3rem;
+    overflow: hidden; display: flex; align-items: stretch;
 }
 .hero-photos::before {
     content: ''; position: absolute; top: 0; left: 0; bottom: 0;
