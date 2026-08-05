@@ -353,9 +353,9 @@ if (!empty($recentPhotos)):
             <option value="<?= $c['id'] ?>"><?= $c['parent_id'] ? '↳ ' : '' ?><?= e($c['name']) ?></option>
             <?php endforeach; ?>
         </select>
-        <div style="display:flex; gap:0.75rem;">
-            <button onclick="submitMove()" class="btn btn-primary" style="flex:1;">Move</button>
-            <button onclick="closeMoveDialog()" class="btn btn-secondary" style="flex:1;">Cancel</button>
+        <div style="display:flex; gap:0.75rem; width:100%;">
+            <button onclick="submitMove()" class="btn btn-primary" style="flex:1; display:block; text-align:center;">Move</button>
+            <button onclick="closeMoveDialog()" class="btn btn-secondary" style="flex:1; display:block; text-align:center;">Cancel</button>
         </div>
     </div>
 </div>
