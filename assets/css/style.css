@@ -267,9 +267,12 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 
 /* ===== SERVICES SECTION ===== */
 .services { padding: 5rem 3rem 6rem; max-width: 1600px; margin: 0 auto; }
-.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+.services-grid {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem;
+}
 .services .card {
     border: 1px solid #eee; padding: 2rem 1.5rem; text-align: center; border-radius: 10px;
+    flex: 0 1 280px; max-width: 320px;
 }
 .services .card h3 {
     font-family: Georgia, 'Times New Roman', serif;
@@ -532,7 +535,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 @media (max-width: 900px) {
     .grid, .photo-grid { column-count: 2; }
     .gallery { padding: 4rem 1.5rem; }
-    .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .services-grid { justify-content: center; }
     .services { padding: 4rem 1.5rem; }
     .about {
         grid-template-columns: 1fr; padding: 4rem 1.5rem;
@@ -581,7 +584,7 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 }
 @media (max-width: 560px) {
     .grid, .photo-grid { column-count: 1; }
-    .services-grid { grid-template-columns: 1fr; }
+    .services-grid { flex-direction: column; align-items: center; }
 }
 
 /* ===== 404 ===== */
@@ -595,3 +598,24 @@ footer .copyright { color: #999; font-size: 0.72rem; margin: 0; }
 /* Active category in gallery sidebar */
 .category-nav a.active { color: #111; font-weight: 600; }
 .category-nav li a.active { color: #111; }
+
+/* ===== STICKY SOCIAL SIDEBAR ===== */
+.social-sticky {
+    position: fixed; right: 0; top: 50%; transform: translateY(-50%);
+    z-index: 80; display: flex; flex-direction: column; gap: 0;
+}
+.social-sticky a {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
+    background: #111; color: #fff;
+    transition: background 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+}
+.social-sticky a:first-child { border-radius: 8px 0 0 0; }
+.social-sticky a:last-child { border-radius: 0 0 0 8px; }
+.social-sticky a:only-child { border-radius: 8px 0 0 8px; }
+.social-sticky a:hover { background: #333; transform: translateX(-3px); }
+
+@media (max-width: 600px) {
+    .social-sticky { display: none; }
+}

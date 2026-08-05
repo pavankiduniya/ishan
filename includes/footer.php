@@ -1,3 +1,19 @@
+<!-- Sticky Social Sidebar -->
+<?php
+$stickyLinks = getSiteContent()['contact']['links'] ?? [];
+if (!empty($stickyLinks)):
+?>
+<div class="social-sticky">
+    <?php foreach ($stickyLinks as $link):
+        $icon = getSocialIcon($link['name']);
+    ?>
+    <a href="<?= e($link['url']) ?>" target="_blank" rel="noopener noreferrer" title="<?= e($link['name']) ?>">
+        <?= $icon ?>
+    </a>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>
+
 <!-- Footer -->
 <footer>
     <p class="signature">ik</p>
