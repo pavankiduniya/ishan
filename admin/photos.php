@@ -297,19 +297,39 @@ require_once __DIR__ . '/layout_head.php';
     <?php endif; ?>
 </section>
 
-<!-- Recent Photos -->
+<!-- Recent Photos (paginated) -->
 <?php
-$recentPhotos = $db->query('SELECT p.*, c.name as category_name FROM photos p JOIN categories c ON p.category_id = c.id ORDER BY p.uploaded_at DESC LIMIT 12')->fetchAll();
-if (!empty($recentPhotos)):
+$photosPage = max(1, (int)($_GET['page'] ?? 1));
+$photosPerPage = 20;
+$totalPhotosCount = (int)$db->query('SELECT COUNT(*) FROM photos')->fetchColumn();
+$totalPhotoPages = max(1, ceil($totalPhotosCount / $photosPerPage));
+$photosPage = min($photosPage, $totalPhotoPages);
+$photosOffset = ($photosPage - 1) * $photosPerPage;
+
+$recentPhotos = $db->query("
+    SELECT p.*, c.name as category_name, c.parent_id,
+           (SELECT pc.name FROM categories pc WHERE pc.id = c.parent_id) as parent_name
+    FROM photos p
+    JOIN categories c ON p.category_id = c.id
+    ORDER BY p.uploaded_at DESC
+    LIMIT $photosPerPage OFFSET $photosOffset
+")->fetchAll();
+
+if ($totalPhotosCount > 0):
 ?>
 <section class="dash-panel">
-    <div class="dash-panel__header"><h2>Recent Uploads</h2></div>
+    <div class="dash-panel__header">
+        <h2>Recent Uploads</h2>
+        <span style="color:#888;font-size:0.78rem;">Showing <?= $photosOffset + 1 ?>–<?= min($photosOffset + $photosPerPage, $totalPhotosCount) ?> of <?= $totalPhotosCount ?></span>
+    </div>
     <div class="photo-admin-grid">
-        <?php foreach ($recentPhotos as $photo): ?>
+        <?php foreach ($recentPhotos as $photo):
+            $catPath = $photo['parent_name'] ? $photo['parent_name'] . ' → ' . $photo['category_name'] : $photo['category_name'];
+        ?>
         <div class="photo-admin-item">
             <img src="<?= e($photo['file_path']) ?>" alt="<?= e($photo['original_name']) ?>" loading="lazy">
             <div class="photo-admin-meta">
-                <span class="tag"><?= e($photo['category_name']) ?></span>
+                <span class="tag"><?= e($catPath) ?></span>
                 <div style="display:flex;gap:4px;align-items:center;">
                     <button type="button" class="icon-btn" title="Move to another category" onclick="movePhoto(<?= $photo['id'] ?>, '<?= e(addslashes($photo['original_name'])) ?>')" style="width:20px;height:20px;background:rgba(255,255,255,0.9);border:none;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -326,6 +346,24 @@ if (!empty($recentPhotos)):
         </div>
         <?php endforeach; ?>
     </div>
+
+    <?php if ($totalPhotoPages > 1): ?>
+    <div class="pagination" style="margin-top:1.5rem;">
+        <?php if ($photosPage > 1): ?>
+        <a href="?page=<?= $photosPage - 1 ?>" class="page-btn">&laquo;</a>
+        <?php endif; ?>
+        <?php for ($i = 1; $i <= $totalPhotoPages; $i++):
+            if ($i <= 3 || $i > $totalPhotoPages - 2 || abs($i - $photosPage) <= 1):
+        ?>
+        <a href="?page=<?= $i ?>" class="page-btn <?= $i === $photosPage ? 'active' : '' ?>"><?= $i ?></a>
+        <?php elseif ($i === 4 || $i === $totalPhotoPages - 2): ?>
+        <span style="color:#888;">...</span>
+        <?php endif; endfor; ?>
+        <?php if ($photosPage < $totalPhotoPages): ?>
+        <a href="?page=<?= $photosPage + 1 ?>" class="page-btn">&raquo;</a>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
 </section>
 <?php endif; ?>
 
