@@ -25,7 +25,7 @@
 
     var items = track.children;
     var totalItems = items.length;
-    var halfCount = totalItems / 2; // We duplicated the set in HTML
+    var oneSetCount = Math.round(totalItems / 3); // We tripled the set in HTML
 
     // Wait for images to load to get correct widths
     var images = track.querySelectorAll('img');
@@ -33,12 +33,11 @@
     var gap = 12;
 
     function startScroll() {
-        // Calculate width of the first half (original set) including gaps
-        var halfWidth = 0;
-        for (var i = 0; i < halfCount; i++) {
-            halfWidth += items[i].offsetWidth;
+        // Calculate width of one set
+        var oneSetWidth = 0;
+        for (var i = 0; i < oneSetCount; i++) {
+            oneSetWidth += items[i].offsetWidth + gap;
         }
-        halfWidth += halfCount * gap; // gap between each item including after last (connects to duplicate)
 
         var speed = 40; // pixels per second
         var offset = 0;
@@ -49,9 +48,9 @@
             lastTime = now;
             offset -= speed * delta;
 
-            // Reset seamlessly when scrolled past first set
-            if (Math.abs(offset) >= halfWidth) {
-                offset += halfWidth;
+            // Reset seamlessly after scrolling one full set
+            if (Math.abs(offset) >= oneSetWidth) {
+                offset += oneSetWidth;
             }
 
             track.style.transform = 'translateX(' + offset + 'px)';

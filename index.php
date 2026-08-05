@@ -36,17 +36,13 @@ $heroPhotos = $db->query('
         <div class="hero-photos">
             <div class="hero-marquee">
                 <div class="hero-marquee__track">
-                    <?php foreach ($heroPhotos as $hp): ?>
-                    <div class="hero-marquee__item">
-                        <img src="<?= e($hp['file_path']) ?>" alt="<?= e($hp['original_name']) ?>" loading="lazy">
-                    </div>
-                    <?php endforeach; ?>
-                    <!-- Duplicate for seamless loop -->
-                    <?php foreach ($heroPhotos as $hp): ?>
-                    <div class="hero-marquee__item">
-                        <img src="<?= e($hp['file_path']) ?>" alt="<?= e($hp['original_name']) ?>" loading="lazy">
-                    </div>
-                    <?php endforeach; ?>
+                    <?php for ($loop = 0; $loop < 3; $loop++): ?>
+                        <?php foreach ($heroPhotos as $hp): ?>
+                        <div class="hero-marquee__item">
+                            <img src="<?= e($hp['file_path']) ?>" alt="<?= e($hp['original_name']) ?>">
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endfor; ?>
                 </div>
             </div>
         </div>
