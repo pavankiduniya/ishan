@@ -14,6 +14,11 @@ if (!empty($stickyLinks)):
 </div>
 <?php endif; ?>
 
+<!-- Scroll to Top Button -->
+<button id="scroll-top" class="scroll-top" aria-label="Scroll to top" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M18 15l-6-6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
 <!-- Footer -->
 <footer>
     <p class="signature">ik</p>
@@ -30,6 +35,19 @@ if (!empty($stickyLinks)):
 </div>
 
 <script src="<?= BASE_URL ?>/assets/js/main.js?v=<?= time() ?>"></script>
+<script>
+// Scroll to top button
+(function() {
+    var btn = document.getElementById('scroll-top');
+    if (!btn) return;
+    window.addEventListener('scroll', function() {
+        btn.hidden = window.scrollY < 300;
+    });
+    btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+})();
+</script>
 <?php if ($showSplash ?? false): ?>
 <script src="<?= BASE_URL ?>/assets/js/splash.js?v=<?= time() ?>"></script>
 <?php endif; ?>
