@@ -91,7 +91,7 @@ require_once __DIR__ . '/includes/header.php';
         </header>
 
         <article>
-            <?= markdownToHtml($post['body']) ?>
+            <?= $post['body'] ?>
         </article>
     </main>
 

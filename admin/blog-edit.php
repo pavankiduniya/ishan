@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin — Create/Edit Blog Post (DB-backed)
+ * Admin — Create/Edit Blog Post (Rich Text Editor)
  */
 $adminTitle = 'New Post';
 $adminActive = 'blog';
@@ -35,14 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($postId && $post) {
-        // Update existing
         $stmt = $db->prepare('UPDATE blog_posts SET title = ?, description = ?, body = ?, cover_image = ?, published_at = ? WHERE id = ?');
         $stmt->execute([$title, $description ?: null, $body, $coverImage ?: null, $pubDate, $postId]);
     } else {
-        // Create new
         $slug = slugify($title) ?: 'post-' . time();
-
-        // Ensure unique slug
         $n = 2;
         $baseSlug = $slug;
         while (true) {
@@ -52,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $slug = $baseSlug . '-' . $n;
             $n++;
         }
-
         $stmt = $db->prepare('INSERT INTO blog_posts (slug, title, description, body, cover_image, published_at) VALUES (?, ?, ?, ?, ?, ?)');
         $stmt->execute([$slug, $title, $description ?: null, $body, $coverImage ?: null, $pubDate]);
     }
@@ -64,31 +59,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 require_once __DIR__ . '/layout_head.php';
 ?>
 
-<form method="POST" class="form-stack">
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+    #editor-container { height: 400px; background: #fff; border-radius: 0 0 6px 6px; }
+    .ql-toolbar { border-radius: 6px 6px 0 0; }
+    .ql-container { border-radius: 0 0 6px 6px; font-size: 1rem; line-height: 1.7; }
+    .ql-editor img { max-width: 100%; height: auto; border-radius: 4px; margin: 1rem 0; }
+</style>
+
+<form method="POST" class="form-stack" id="post-form">
     <div class="form-group">
         <label for="title">Title</label>
         <input type="text" id="title" name="title" value="<?= e($post['title'] ?? '') ?>" required>
     </div>
 
     <div class="form-group">
-        <label for="description">Description (optional)</label>
+        <label for="description">Description (optional — shows as subtitle)</label>
         <input type="text" id="description" name="description" value="<?= e($post['description'] ?? '') ?>">
     </div>
 
     <div class="form-row">
         <div class="form-group">
-            <label for="pubDate">Date</label>
+            <label for="pubDate">Publish Date</label>
             <input type="date" id="pubDate" name="pubDate" value="<?= e($post['published_at'] ?? date('Y-m-d')) ?>">
         </div>
         <div class="form-group">
             <label for="coverImage">Cover Image URL (optional)</label>
-            <input type="text" id="coverImage" name="coverImage" value="<?= e($post['cover_image'] ?? '') ?>" placeholder="/uploads/...">
+            <input type="text" id="coverImage" name="coverImage" value="<?= e($post['cover_image'] ?? '') ?>" placeholder="/uploads/blog/...">
         </div>
     </div>
 
     <div class="form-group">
-        <label for="body">Content (Markdown)</label>
-        <textarea id="body" name="body" rows="18"><?= e($post['body'] ?? '') ?></textarea>
+        <label>Content</label>
+        <div id="editor-container"></div>
+        <input type="hidden" name="body" id="body-input">
     </div>
 
     <div class="form-actions">
@@ -96,5 +101,73 @@ require_once __DIR__ . '/layout_head.php';
         <a href="<?= BASE_URL ?>/admin/blog" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
+
+<!-- Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+var quill = new Quill('#editor-container', {
+    theme: 'snow',
+    placeholder: 'Write your blog post here...',
+    modules: {
+        toolbar: {
+            container: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['blockquote', 'code-block'],
+                [{ 'align': [] }],
+                ['link', 'image', 'video'],
+                ['clean']
+            ],
+            handlers: {
+                image: imageHandler
+            }
+        }
+    }
+});
+
+// Load existing content
+<?php if ($post && $post['body']): ?>
+quill.root.innerHTML = <?= json_encode($post['body']) ?>;
+<?php endif; ?>
+
+// Image upload handler
+function imageHandler() {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = function() {
+        var file = input.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append('image', file);
+
+        fetch('<?= BASE_URL ?>/api/upload-image.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.url) {
+                var range = quill.getSelection(true);
+                quill.insertEmbed(range.index, 'image', data.url);
+                quill.setSelection(range.index + 1);
+            } else {
+                alert(data.error || 'Upload failed');
+            }
+        })
+        .catch(function() { alert('Upload failed'); });
+    };
+}
+
+// On form submit, copy editor HTML to hidden input
+document.getElementById('post-form').addEventListener('submit', function() {
+    document.getElementById('body-input').value = quill.root.innerHTML;
+});
+</script>
 
 <?php require_once __DIR__ . '/layout_foot.php'; ?>
