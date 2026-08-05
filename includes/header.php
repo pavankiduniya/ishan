@@ -28,7 +28,7 @@ $hasPosts = count($blogPosts) > 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($pageTitle) ?> — Nazarbandi</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css?v=<?= filemtime(SITE_ROOT . '/assets/css/style.css') ?>">
 </head>
 <body>
 <?php if ($showSplash): ?>
