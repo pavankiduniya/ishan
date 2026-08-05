@@ -3,11 +3,22 @@ require_once __DIR__ . '/functions.php';
 
 $pageTitle = $pageTitle ?? 'Home';
 $showSplash = $showSplash ?? false;
-$categories = getAllCategoryTrees();
-$hasPhotos = false;
-foreach ($categories as $c) {
-    if ($c['total'] > 0) { $hasPhotos = true; break; }
+
+// Gallery nav from DB
+$db = getDB();
+$totalPhotosNav = (int)$db->query('SELECT COUNT(*) FROM photos')->fetchColumn();
+$hasPhotos = $totalPhotosNav > 0;
+
+$navCategories = [];
+if ($hasPhotos) {
+    $allCats = $db->query('SELECT id, name, slug, parent_id FROM categories ORDER BY sort_order, name')->fetchAll();
+    $parentCats = array_filter($allCats, function($c) { return $c['parent_id'] === null; });
+    foreach ($parentCats as &$p) {
+        $p['children'] = array_filter($allCats, function($c) use ($p) { return (int)$c['parent_id'] === (int)$p['id']; });
+    }
+    $navCategories = $parentCats;
 }
+
 $blogPosts = getBlogPosts();
 $hasPosts = count($blogPosts) > 0;
 ?>
@@ -44,13 +55,13 @@ $hasPosts = count($blogPosts) > 0;
         <div class="dropdown">
             <a href="<?= BASE_URL ?>/gallery">Gallery</a>
             <div class="dropdown-menu">
-                <?php foreach ($categories as $c): ?>
+                <?php foreach ($navCategories as $c): ?>
                 <div class="dropdown-group">
-                    <a href="<?= BASE_URL ?>/gallery#cat-<?= e($c['slug']) ?>"><?= e($c['label']) ?></a>
-                    <?php if (!empty($c['subcategories'])): ?>
+                    <a href="<?= BASE_URL ?>/gallery?cat=<?= e($c['slug']) ?>"><?= e($c['name']) ?></a>
+                    <?php if (!empty($c['children'])): ?>
                     <div class="dropdown-sub">
-                        <?php foreach ($c['subcategories'] as $s): ?>
-                        <a href="<?= BASE_URL ?>/gallery#cat-<?= e($c['slug']) ?>-sub-<?= e($s['slug']) ?>"><?= e($s['label']) ?></a>
+                        <?php foreach ($c['children'] as $s): ?>
+                        <a href="<?= BASE_URL ?>/gallery?cat=<?= e($s['slug']) ?>"><?= e($s['name']) ?></a>
                         <?php endforeach; ?>
                     </div>
                     <?php endif; ?>

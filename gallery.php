@@ -1,36 +1,82 @@
 <?php
 /**
- * Nazarbandi — Full Gallery Page
+ * Nazarbandi — Gallery Page (DB-backed, filterable by category)
  */
 $pageTitle = 'Gallery';
 
 require_once __DIR__ . '/includes/header.php';
 
-$categories = getAllCategoryTrees();
-$total = 0;
-foreach ($categories as $c) {
-    $total += $c['total'];
+$db = getDB();
+
+// Get all categories
+$allCats = $db->query('SELECT id, name, slug, parent_id FROM categories ORDER BY sort_order, name')->fetchAll();
+$parentCats = array_filter($allCats, function($c) { return $c['parent_id'] === null; });
+
+// Check if filtering by category
+$activeCatSlug = $_GET['cat'] ?? '';
+$activeCat = null;
+if ($activeCatSlug) {
+    foreach ($allCats as $c) {
+        if ($c['slug'] === $activeCatSlug) { $activeCat = $c; break; }
+    }
 }
+
+// Fetch photos based on filter
+if ($activeCat) {
+    // If it's a parent category, get all photos in it + its subcategories
+    if ($activeCat['parent_id'] === null) {
+        $childIds = [$activeCat['id']];
+        foreach ($allCats as $c) {
+            if ((int)$c['parent_id'] === (int)$activeCat['id']) $childIds[] = $c['id'];
+        }
+        $placeholders = implode(',', array_fill(0, count($childIds), '?'));
+        $stmt = $db->prepare("SELECT * FROM photos WHERE category_id IN ($placeholders) ORDER BY sort_order, uploaded_at DESC");
+        $stmt->execute($childIds);
+    } else {
+        // Subcategory — just its photos
+        $stmt = $db->prepare("SELECT * FROM photos WHERE category_id = ? ORDER BY sort_order, uploaded_at DESC");
+        $stmt->execute([$activeCat['id']]);
+    }
+    $photos = $stmt->fetchAll();
+    $pageTitle = $activeCat['name'] . ' — Gallery';
+} else {
+    // All photos
+    $photos = $db->query('SELECT * FROM photos ORDER BY sort_order, uploaded_at DESC')->fetchAll();
+}
+
+$totalPhotos = (int)$db->query('SELECT COUNT(*) FROM photos')->fetchColumn();
+
+// Build sidebar counts
+$photoCounts = [];
+$rows = $db->query('SELECT category_id, COUNT(*) as cnt FROM photos GROUP BY category_id')->fetchAll();
+foreach ($rows as $r) $photoCounts[$r['category_id']] = (int)$r['cnt'];
 ?>
 
 <div class="gallery-layout">
     <!-- Sidebar -->
     <aside class="sidebar">
         <p class="kicker">Categories</p>
-        <p class="total"><?= $total ?> photos</p>
+        <p class="total"><?= $totalPhotos ?> photos</p>
 
         <nav class="category-nav">
-            <?php foreach ($categories as $c): ?>
+            <a href="<?= BASE_URL ?>/gallery" class="category-link <?= !$activeCatSlug ? 'active' : '' ?>">
+                All <span>(<?= $totalPhotos ?>)</span>
+            </a>
+            <?php foreach ($parentCats as $p):
+                $parentCount = $photoCounts[$p['id']] ?? 0;
+                $children = array_filter($allCats, function($c) use ($p) { return (int)$c['parent_id'] === (int)$p['id']; });
+                foreach ($children as $ch) $parentCount += ($photoCounts[$ch['id']] ?? 0);
+            ?>
             <div class="category-group">
-                <a href="#cat-<?= e($c['slug']) ?>" class="category-link">
-                    <?= e($c['label']) ?> <span>(<?= $c['total'] ?>)</span>
+                <a href="<?= BASE_URL ?>/gallery?cat=<?= e($p['slug']) ?>" class="category-link <?= $activeCatSlug === $p['slug'] ? 'active' : '' ?>">
+                    <?= e($p['name']) ?> <span>(<?= $parentCount ?>)</span>
                 </a>
-                <?php if (!empty($c['subcategories'])): ?>
+                <?php if (!empty($children)): ?>
                 <ul>
-                    <?php foreach ($c['subcategories'] as $sub): ?>
+                    <?php foreach ($children as $sub): ?>
                     <li>
-                        <a href="#cat-<?= e($c['slug']) ?>-sub-<?= e($sub['slug']) ?>">
-                            <?= e($sub['label']) ?> <span>(<?= count($sub['photos']) ?>)</span>
+                        <a href="<?= BASE_URL ?>/gallery?cat=<?= e($sub['slug']) ?>" class="<?= $activeCatSlug === $sub['slug'] ? 'active' : '' ?>">
+                            <?= e($sub['name']) ?> <span>(<?= $photoCounts[$sub['id']] ?? 0 ?>)</span>
                         </a>
                     </li>
                     <?php endforeach; ?>
@@ -44,48 +90,22 @@ foreach ($categories as $c) {
     <!-- Main Gallery Content -->
     <main class="gallery-page">
         <header class="heading">
-            <p class="kicker">Full gallery</p>
-            <h1>All the frames</h1>
-            <p class="sub">Everything so far, sorted by category.</p>
+            <p class="kicker"><?= $activeCat ? e($activeCat['name']) : 'Full gallery' ?></p>
+            <h1><?= $activeCat ? e($activeCat['name']) : 'All the frames' ?></h1>
+            <p class="sub"><?= $activeCat ? 'Showing ' . count($photos) . ' photos' : 'Everything so far, sorted by category.' ?></p>
         </header>
 
-        <?php if (empty($categories)): ?>
-            <p class="empty">No categories yet — add a folder under <code>public/photos/</code> and drop some images in.</p>
+        <?php if (empty($photos)): ?>
+            <p class="empty">No photos yet.</p>
         <?php else: ?>
-            <?php foreach ($categories as $c): ?>
-            <section id="cat-<?= e($c['slug']) ?>" class="category">
-                <h2><?= e($c['label']) ?></h2>
-
-                <?php if ($c['total'] === 0): ?>
-                    <p class="empty">Nothing added to this folder yet.</p>
-                <?php else: ?>
-                    <?php if (!empty($c['direct'])): ?>
-                    <div class="photo-grid">
-                        <?php foreach ($c['direct'] as $p): ?>
-                        <figure>
-                            <img src="<?= e($p['gallery']) ?>" data-full="<?= e($p['src']) ?>" alt="<?= e($p['filename']) ?>" loading="lazy">
-                            <span class="watermark">ik</span>
-                        </figure>
-                        <?php endforeach; ?>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php foreach ($c['subcategories'] as $sub): ?>
-                    <div id="cat-<?= e($c['slug']) ?>-sub-<?= e($sub['slug']) ?>" class="subcategory">
-                        <h3><?= e($sub['label']) ?></h3>
-                        <div class="photo-grid">
-                            <?php foreach ($sub['photos'] as $p): ?>
-                            <figure>
-                                <img src="<?= e($p['gallery']) ?>" data-full="<?= e($p['src']) ?>" alt="<?= e($p['filename']) ?>" loading="lazy">
-                                <span class="watermark">ik</span>
-                            </figure>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </section>
-            <?php endforeach; ?>
+            <div class="photo-grid">
+                <?php foreach ($photos as $p): ?>
+                <figure>
+                    <img src="<?= e($p['file_path']) ?>" data-full="<?= e($p['file_path']) ?>" alt="<?= e($p['original_name']) ?>" loading="lazy">
+                    <span class="watermark">ik</span>
+                </figure>
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
     </main>
 </div>
