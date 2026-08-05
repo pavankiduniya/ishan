@@ -18,6 +18,61 @@
 <script src="<?= BASE_URL ?>/assets/js/splash.js?v=<?= time() ?>"></script>
 <?php endif; ?>
 <script>
+// Hero marquee — truly seamless infinite scroll
+(function() {
+    var track = document.querySelector('.hero-marquee__track');
+    if (!track) return;
+
+    var items = track.children;
+    var totalItems = items.length;
+    var halfCount = totalItems / 2; // We duplicated the set in HTML
+
+    // Wait for images to load to get correct widths
+    var images = track.querySelectorAll('img');
+    var loaded = 0;
+    var gap = 12;
+
+    function startScroll() {
+        // Calculate width of the first half (original set)
+        var halfWidth = 0;
+        for (var i = 0; i < halfCount; i++) {
+            halfWidth += items[i].offsetWidth + gap;
+        }
+
+        var speed = 40; // pixels per second
+        var offset = 0;
+        var lastTime = performance.now();
+
+        function animate(now) {
+            var delta = (now - lastTime) / 1000;
+            lastTime = now;
+            offset -= speed * delta;
+
+            // When we've scrolled past the first set, reset seamlessly
+            if (Math.abs(offset) >= halfWidth) {
+                offset += halfWidth;
+            }
+
+            track.style.transform = 'translateX(' + offset + 'px)';
+            requestAnimationFrame(animate);
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    if (images.length === 0) { startScroll(); return; }
+
+    function checkLoaded() {
+        loaded++;
+        if (loaded >= images.length) startScroll();
+    }
+    for (var i = 0; i < images.length; i++) {
+        if (images[i].complete) { checkLoaded(); }
+        else { images[i].addEventListener('load', checkLoaded); images[i].addEventListener('error', checkLoaded); }
+    }
+})();
+</script>
+<script>
 // Visit tracking beacon + live counter polling
 (function() {
     var countEl = document.getElementById('visit-count');

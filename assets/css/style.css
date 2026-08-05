@@ -131,18 +131,13 @@ a { color: inherit; }
 .hero-marquee { width: 100%; overflow: hidden; }
 .hero-marquee__track {
     display: flex; gap: 12px;
-    animation: heroScroll 30s linear infinite;
+    will-change: transform;
 }
 .hero-marquee__item {
     flex-shrink: 0; width: 280px; height: 380px; overflow: hidden;
 }
 .hero-marquee__item img {
     width: 100%; height: 100%; object-fit: cover; display: block;
-}
-
-@keyframes heroScroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
 }
 
 .scroll-cue {
