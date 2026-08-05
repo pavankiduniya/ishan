@@ -105,12 +105,12 @@ require_once __DIR__ . '/includes/header.php';
     <aside class="right-rail" id="right-rail">
         <div class="widget author">
             <?php if (!empty($aboutInfo['photo'])): ?>
-            <img class="avatar-img" src="<?= e($aboutInfo['photo']) ?>" alt="<?= e($aboutInfo['heading']) ?>">
+            <img class="avatar-img" src="<?= e($aboutInfo['photo']) ?>" alt="<?= e($aboutInfo['heading']) ?>" style="width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;margin-bottom:1rem;">
             <?php else: ?>
             <div class="avatar"></div>
             <?php endif; ?>
             <h4><?= e(str_replace("Hello, I'm ", '', $aboutInfo['heading'])) ?></h4>
-            <p><?= e($aboutInfo['paragraphs'][0] ?? '') ?></p>
+            <p><?= e(mb_substr($aboutInfo['paragraphs'][0] ?? '', 0, 120)) ?>...</p>
             <a href="<?= BASE_URL ?>/#about">More about me &rarr;</a>
         </div>
 
