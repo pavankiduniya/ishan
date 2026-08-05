@@ -80,7 +80,7 @@ a { color: inherit; }
 .dropdown-group { padding: 0.15rem 0; }
 .dropdown-group > a {
     display: block; padding: 0.5rem 0.75rem;
-    font-family: Georgia, 'Times New Roman', serif; font-size: 0.95rem;
+    font-size: 0.95rem;
     letter-spacing: 0; text-transform: none; opacity: 1; line-height: 1.2;
 }
 .dropdown-group > a:hover { background: #f5f5f5; opacity: 1; }
