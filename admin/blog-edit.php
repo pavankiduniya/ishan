@@ -65,7 +65,7 @@ require_once __DIR__ . '/layout_head.php';
     #editor-container { height: 400px; background: #fff; border-radius: 0 0 6px 6px; }
     .ql-toolbar { border-radius: 6px 6px 0 0; }
     .ql-container { border-radius: 0 0 6px 6px; font-size: 1rem; line-height: 1.7; }
-    .ql-editor img { max-width: 20%; height: auto; border-radius: 4px; margin: 0.5rem 0; }
+    .ql-editor img, #editor-container img { max-width: 20% !important; height: auto !important; border-radius: 4px; margin: 0.5rem 0; display: block; }
 </style>
 
 <form method="POST" class="form-stack" id="post-form">
