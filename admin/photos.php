@@ -240,11 +240,15 @@ require_once __DIR__ . '/layout_head.php';
                 <td><?= $c['parent_id'] ? '<span class="tag">Sub of ' . e($parentName) . '</span>' : 'Category' ?></td>
                 <td><?= $photoCounts[$c['id']] ?? 0 ?></td>
                 <td class="actions">
-                    <button type="button" class="action" onclick="renameCategory(<?= $c['id'] ?>, '<?= e(addslashes($c['name'])) ?>')">Edit</button>
+                    <button type="button" class="icon-btn" title="Rename" onclick="renameCategory(<?= $c['id'] ?>, '<?= e(addslashes($c['name'])) ?>')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
                     <form method="POST" style="display:inline" onsubmit="return confirm('Delete this category and all its photos?')">
                         <input type="hidden" name="action" value="delete_category">
                         <input type="hidden" name="category_id" value="<?= $c['id'] ?>">
-                        <button type="submit" class="action danger" style="background:none;border:none;cursor:pointer;">Delete</button>
+                        <button type="submit" class="icon-btn icon-btn--danger" title="Delete">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
                     </form>
                 </td>
             </tr>

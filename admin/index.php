@@ -126,19 +126,15 @@ $recentVisits = $db->query("
             </div>
             <div class="quick-stat">
                 <span class="quick-stat__label">Categories</span>
-                <span class="quick-stat__value"><?= count($categories) ?></span>
+                <span class="quick-stat__value"><?= count($dbCategories) ?></span>
             </div>
             <div class="quick-stat">
                 <span class="quick-stat__label">Subcategories</span>
-                <span class="quick-stat__value"><?php
-                    $subCount = 0;
-                    foreach ($categories as $c) $subCount += count($c['subcategories']);
-                    echo $subCount;
-                ?></span>
+                <span class="quick-stat__value"><?= (int)$db->query('SELECT COUNT(*) FROM categories WHERE parent_id IS NOT NULL')->fetchColumn() ?></span>
             </div>
             <div class="quick-stat">
                 <span class="quick-stat__label">Photos/Category</span>
-                <span class="quick-stat__value"><?= count($categories) > 0 ? round($totalPhotos / count($categories)) : 0 ?></span>
+                <span class="quick-stat__value"><?= count($dbCategories) > 0 ? round($totalPhotos / count($dbCategories)) : 0 ?></span>
             </div>
         </div>
     </section>

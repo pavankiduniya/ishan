@@ -413,3 +413,15 @@ button, input, select, textarea { font-family: inherit; }
     display: flex; justify-content: space-between;
     font-size: 0.75rem; color: #888;
 }
+
+/* ===== ICON BUTTONS ===== */
+.icon-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 6px;
+    border: 1px solid #eee; background: #fff; cursor: pointer;
+    color: #555; transition: all 0.15s ease;
+}
+.icon-btn:hover { border-color: #111; color: #111; background: #f9f9f9; }
+.icon-btn--danger { color: #c00; border-color: #fdd; }
+.icon-btn--danger:hover { color: #fff; background: #c00; border-color: #c00; }
+.actions { display: flex; gap: 6px; align-items: center; }
