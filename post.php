@@ -24,6 +24,7 @@ if (!$post) {
 $pageTitle = $post['title'];
 
 // Build archive for sidebar
+$posts = getBlogPosts();
 $archive = [];
 foreach ($posts as $p2) {
     $date = strtotime($p2['pubDate']);
